@@ -90,7 +90,7 @@ export function Footer() {
                 {/* Bottom Section */}
                 <div className="text-center pt-8 border-t border-border">
                     <p className="text-sm text-muted-foreground">
-                        © {currentYear} Ayush Gupta. Built with{" "}
+                        © Ayush Gupta. Built with{" "}
                         <span className="text-primary">Next.js</span>,{" "}
                         <span className="text-primary">TypeScript</span>, and{" "}
                         <Heart className="inline-block w-4 h-4 text-red-500 fill-red-500 animate-pulse" />
