@@ -101,9 +101,6 @@ export function SkillsSphere() {
                 <h2 className="text-4xl md:text-6xl font-bold font-heading mb-4">
                     Tech <span className="text-primary">Universe</span>
                 </h2>
-                <p className="text-muted-foreground text-lg">
-                    Drag to explore • {skills.length} technologies
-                </p>
             </div>
 
             <div className="w-full h-full relative">
