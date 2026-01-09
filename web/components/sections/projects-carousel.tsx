@@ -118,12 +118,18 @@ export function ProjectsCarousel() {
                 {/* View All Projects Link */}
                 {projects.length > 6 && (
                     <div className="text-center mt-12">
-                        <a
-                            href="#projects"
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-primary/10 border border-primary rounded-lg hover:bg-primary hover:text-primary-foreground transition-all font-semibold"
+                        <button
+                            onClick={() => {
+                                // Show all projects by scrolling or expanding
+                                document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+                            }}
+                            className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all font-semibold shadow-lg hover:shadow-xl"
                         >
                             View All {projects.length} Projects
-                        </a>
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
                     </div>
                 )}
             </div>
