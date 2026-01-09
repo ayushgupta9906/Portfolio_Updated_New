@@ -179,7 +179,19 @@ export const projects = [
       demo: "https://www.bosdb.tech/",
       code: "https://github.com/ayushgupta9906/BosDB"
     },
-    image: "/projects/bosdb.png"
+    image: "/projects/bosdb.png",
+    status: "In Development"
+  },
+  {
+    title: "Oxon AI – Intelligent IDE",
+    description: "An AI-native IDE designed for seamless autonomous coding and building. Features integrated agentic capabilities and context-aware code generation. Currently in active development.",
+    tech: ["Next.js", "Python", "LLMs", "Web Container", "Tailwind CSS"],
+    links: {
+      demo: "#",
+      code: "#"
+    },
+    image: "/projects/oxon_ai.jpg",
+    status: "In Development"
   },
   {
     title: "Lenskart Optimetry Centre",
@@ -190,16 +202,6 @@ export const projects = [
       code: "#"
     },
     image: "https://laserx.vercel.app/assests/images/lenskart.png"
-  },
-  {
-    title: "SafeMaX Security",
-    description: "A full-stack web application for SafeMax Security, offering VAPT services and cybersecurity solutions. Built with React, Node.js, Express, and MongoDB.",
-    tech: ["React", "Node.js", "Express", "MongoDB", "Cybersecurity"],
-    links: {
-      demo: "https://safemaxx.onrender.com/",
-      code: "https://github.com/ayushgupta9906/SafeMaxx"
-    },
-    image: "https://laserx.vercel.app/assests/images/Screenshot%202024-11-20%20164712.png"
   },
   {
     title: "LaserX ClothingStore",
@@ -220,6 +222,16 @@ export const projects = [
       code: "https://github.com/ayushgupta9906/India-s-Got-Latent"
     },
     image: "https://laserx.vercel.app/assests/images/latent.png"
+  },
+  {
+    title: "SafeMaX Security",
+    description: "A full-stack web application for SafeMax Security, offering VAPT services and cybersecurity solutions. Built with React, Node.js, Express, and MongoDB.",
+    tech: ["React", "Node.js", "Express", "MongoDB", "Cybersecurity"],
+    links: {
+      demo: "https://safemaxx.onrender.com/",
+      code: "https://github.com/ayushgupta9906/SafeMaxx"
+    },
+    image: "https://laserx.vercel.app/assests/images/Screenshot%202024-11-20%20164712.png"
   },
   {
     title: "Zepto New Features",

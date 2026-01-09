@@ -56,6 +56,11 @@ export function ProjectsCarousel() {
                             >
                                 {/* Project Preview Image */}
                                 <div className="h-56 bg-neutral-900 relative overflow-hidden">
+                                    {(project as any).status === "In Development" && (
+                                        <div className="absolute top-4 right-4 z-20 px-3 py-1 bg-yellow-500/90 text-black text-[10px] font-black uppercase tracking-widest rounded-full shadow-xl">
+                                            Development Phase
+                                        </div>
+                                    )}
                                     {project.image && project.image !== "/project_placeholder.png" ? (
                                         <img
                                             src={project.image}
@@ -73,7 +78,7 @@ export function ProjectsCarousel() {
                                     {/* Hover overlay */}
                                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center backdrop-blur-[2px]">
                                         <div className="bg-white text-black px-6 py-2 rounded-full font-bold transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 flex items-center gap-2">
-                                            View Project <ExternalLink size={16} />
+                                            {(project as any).status === "In Development" ? "Details Coming Soon" : "View Project"} <ExternalLink size={16} />
                                         </div>
                                     </div>
                                 </div>
@@ -102,27 +107,33 @@ export function ProjectsCarousel() {
                                     {/* Action Buttons */}
                                     <div className="grid grid-cols-2 gap-4 mt-auto">
                                         <button
-                                            className="py-3 px-4 bg-primary text-primary-foreground rounded-2xl hover:bg-primary/90 transition-all font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+                                            className={`py-3 px-4 rounded-2xl transition-all font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-primary/20 ${(project as any).status === "In Development" ? "bg-muted text-muted-foreground cursor-not-allowed" : "bg-primary text-primary-foreground hover:bg-primary/90"}`}
+                                            disabled={(project as any).status === "In Development"}
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                window.open(project.links.demo, "_blank");
+                                                if ((project as any).status !== "In Development") {
+                                                    window.open(project.links.demo, "_blank");
+                                                }
                                             }}
                                         >
                                             <ExternalLink size={16} />
-                                            View
+                                            {(project as any).status === "In Development" ? "Queued" : "View"}
                                         </button>
-                                        {project.links.code !== "#" && (
+                                        {project.links.code !== "#" || (project as any).status === "In Development" ? (
                                             <button
-                                                className="py-3 px-4 bg-secondary/80 border border-border rounded-2xl hover:bg-secondary transition-all font-bold text-sm flex items-center justify-center gap-2 backdrop-blur-sm"
+                                                className={`py-3 px-4 border border-border rounded-2xl transition-all font-bold text-sm flex items-center justify-center gap-2 backdrop-blur-sm ${(project as any).status === "In Development" ? "bg-muted/50 text-muted-foreground cursor-not-allowed" : "bg-secondary/80 hover:bg-secondary"}`}
+                                                disabled={(project as any).status === "In Development"}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    window.open(project.links.code, "_blank");
+                                                    if ((project as any).status !== "In Development") {
+                                                        window.open(project.links.code, "_blank");
+                                                    }
                                                 }}
                                             >
                                                 <Github size={16} />
-                                                Code
+                                                {(project as any).status === "In Development" ? "Private" : "Code"}
                                             </button>
-                                        )}
+                                        ) : null}
                                     </div>
                                 </div>
                             </motion.div>

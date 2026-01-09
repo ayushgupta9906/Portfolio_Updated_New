@@ -57,8 +57,8 @@ export function HeroHUD() {
             {/* Corner Brackets with Data Strings */}
             <div className="fixed top-12 left-12 p-2 hidden lg:block">
                 <div className="text-[10px] font-mono text-primary/40 flex flex-col gap-1">
-                    <span>{`LOCATION: 28.6139° N, 77.2090° E`}</span>
-                    <span>{`STATUS: ONLINE`}</span>
+                    <span>{`SYS_CORE: v2.4.0`}</span>
+                    <span>{`OS_VAR: CYBER_LNX`}</span>
                 </div>
                 <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-primary/40" />
             </div>

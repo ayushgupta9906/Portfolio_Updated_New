@@ -129,6 +129,34 @@ export function SkillsSphere() {
 
                 {/* 2D Labels overlay */}
                 <div className="absolute inset-0 pointer-events-none">
+                    {/* HUD Elements for Tech Universe */}
+                    <div className="absolute top-1/2 left-8 md:left-20 -translate-y-1/2 flex flex-col gap-8 opacity-40 hover:opacity-100 transition-opacity duration-500 hidden md:flex">
+                        <div className="flex flex-col gap-1">
+                            <span className="text-[10px] text-primary font-mono tracking-widest uppercase opacity-70">Sector Origin</span>
+                            <span className="text-white font-mono text-sm tracking-tighter">28.6139° N, 77.2090° E</span>
+                        </div>
+                        <div className="w-12 h-px bg-gradient-to-r from-primary to-transparent" />
+                        <div className="flex flex-col gap-1">
+                            <span className="text-[10px] text-primary font-mono tracking-widest uppercase opacity-70">Uplink Status</span>
+                            <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+                                <span className="text-white font-mono text-sm tracking-tighter">ONLINE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="absolute top-1/2 right-8 md:right-20 -translate-y-1/2 flex flex-col gap-8 opacity-40 hover:opacity-100 transition-opacity duration-500 text-right hidden md:flex">
+                        <div className="flex flex-col gap-1">
+                            <span className="text-[10px] text-primary font-mono tracking-widest uppercase opacity-70">Neural Mesh</span>
+                            <span className="text-white font-mono text-sm tracking-tighter">VERIFIED</span>
+                        </div>
+                        <div className="w-12 h-px bg-gradient-to-l from-primary to-transparent ml-auto" />
+                        <div className="flex flex-col gap-1">
+                            <span className="text-[10px] text-primary font-mono tracking-widest uppercase opacity-70">Tech Cycle</span>
+                            <span className="text-white font-mono text-sm tracking-tighter">ACTIVE_01</span>
+                        </div>
+                    </div>
+
                     {Object.entries(labels).map(([name, pos]) => {
                         if (pos.z > 1) return null; // Behind camera
 
