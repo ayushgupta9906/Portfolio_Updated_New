@@ -23,101 +23,97 @@ export function ProjectsCarousel() {
                     </p>
                 </div>
 
-                {/* 3 Projects Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {displayedProjects.map((project, idx) => (
                         <motion.div
                             key={project.title}
-                            className="relative group"
+                            layout
+                            className="relative group cursor-pointer h-full"
                             onHoverStart={() => setHoveredIndex(idx)}
                             onHoverEnd={() => setHoveredIndex(null)}
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: (idx % 3) * 0.1 }}
+                            onClick={() => window.open(project.links.demo, "_blank")}
                         >
                             <motion.div
-                                className={`relative bg-card border-2 border-border rounded-2xl overflow-hidden transition-all duration-300 h-full ${hoveredIndex === idx ? "z-10 shadow-2xl shadow-primary/20" : ""
+                                className={`relative bg-card border border-border rounded-3xl overflow-hidden transition-all duration-500 h-full flex flex-col ${hoveredIndex === idx ? "z-10 shadow-[0_0_40px_rgba(124,58,237,0.2)] border-primary/50" : "hover:border-primary/30"
                                     }`}
                                 animate={{
-                                    scale: hoveredIndex === idx ? 1.05 : 1,
-                                    y: hoveredIndex === idx ? -10 : 0
+                                    scale: hoveredIndex === idx ? 1.02 : 1,
+                                    y: hoveredIndex === idx ? -8 : 0
                                 }}
-                                transition={{ duration: 0.3 }}
+                                transition={{ duration: 0.4, ease: "easeOut" }}
                             >
-                                {/* Project Preview Image/Gradient */}
-                                <div className="h-48 bg-gradient-to-br from-primary/20 via-primary/10 to-transparent relative overflow-hidden">
+                                {/* Project Preview Image */}
+                                <div className="h-56 bg-neutral-900 relative overflow-hidden">
                                     {project.image && project.image !== "/project_placeholder.png" ? (
                                         <img
                                             src={project.image}
                                             alt={project.title}
-                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                         />
                                     ) : (
-                                        <div className="absolute inset-0 flex items-center justify-center">
-                                            <div className="text-6xl font-bold text-white/10">
-                                                {String(idx + 1).padStart(2, '0')}
+                                        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-transparent">
+                                            <div className="text-6xl font-bold text-white/5 uppercase tracking-tighter">
+                                                {project.title.split(' ')[0]}
                                             </div>
                                         </div>
                                     )}
-                                    {/* Hover overlay with preview hint */}
-                                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <div className="text-center">
-                                            <ExternalLink className="w-12 h-12 text-white mb-2 mx-auto" />
-                                            <p className="text-white font-semibold">Click to view live</p>
+
+                                    {/* Hover overlay */}
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center backdrop-blur-[2px]">
+                                        <div className="bg-white text-black px-6 py-2 rounded-full font-bold transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 flex items-center gap-2">
+                                            View Project <ExternalLink size={16} />
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Project Info */}
-                                <div className="p-6 flex flex-col h-full">
-                                    <h3 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">
+                                <div className="p-8 flex flex-col flex-1">
+                                    <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors line-clamp-1">
                                         {project.title}
                                     </h3>
-                                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                                    <p className="text-sm text-muted-foreground mb-6 line-clamp-3 leading-relaxed">
                                         {project.description}
                                     </p>
 
                                     {/* Tech Stack */}
-                                    <div className="flex flex-wrap gap-2 mb-6 mt-auto">
-                                        {project.tech.slice(0, 3).map((tech) => (
+                                    <div className="flex flex-wrap gap-2 mb-8 mt-auto">
+                                        {project.tech.map((tech) => (
                                             <span
                                                 key={tech}
-                                                className="text-xs px-2 py-1 bg-primary/10 text-primary rounded-md font-medium"
+                                                className="text-[10px] uppercase tracking-wider px-2.5 py-1 bg-secondary/50 border border-border text-muted-foreground rounded-md font-mono"
                                             >
                                                 {tech}
                                             </span>
                                         ))}
-                                        {project.tech.length > 3 && (
-                                            <span className="text-xs px-2 py-1 text-muted-foreground">
-                                                +{project.tech.length - 3}
-                                            </span>
-                                        )}
                                     </div>
 
                                     {/* Action Buttons */}
-                                    <div className="flex gap-3">
-                                        <a
-                                            href={project.links.demo}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex-1 py-2 px-4 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all font-semibold text-center flex items-center justify-center gap-2"
-                                            onClick={(e) => e.stopPropagation()}
+                                    <div className="grid grid-cols-2 gap-4 mt-auto">
+                                        <button
+                                            className="py-3 px-4 bg-primary text-primary-foreground rounded-2xl hover:bg-primary/90 transition-all font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                window.open(project.links.demo, "_blank");
+                                            }}
                                         >
                                             <ExternalLink size={16} />
-                                            Live Demo
-                                        </a>
+                                            View
+                                        </button>
                                         {project.links.code !== "#" && (
-                                            <a
-                                                href={project.links.code}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="py-2 px-4 bg-secondary border border-border rounded-lg hover:bg-secondary/80 transition-all font-semibold flex items-center justify-center gap-2"
-                                                onClick={(e) => e.stopPropagation()}
+                                            <button
+                                                className="py-3 px-4 bg-secondary/80 border border-border rounded-2xl hover:bg-secondary transition-all font-bold text-sm flex items-center justify-center gap-2 backdrop-blur-sm"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    window.open(project.links.code, "_blank");
+                                                }}
                                             >
                                                 <Github size={16} />
                                                 Code
-                                            </a>
+                                            </button>
                                         )}
                                     </div>
                                 </div>

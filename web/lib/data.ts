@@ -176,10 +176,10 @@ export const projects = [
     description: "Architected a browser-based database platform with a native Git-like version control system for schema and data changes. Enabled commits, branches, merges, and rollback.",
     tech: ["Next.js", "TypeScript", "Node.js", "PostgreSQL", "MongoDB", "Redis", "Docker"],
     links: {
-      demo: "https://bosdb.vercel.app",
+      demo: "https://www.bosdb.tech/",
       code: "https://github.com/ayushgupta9906/BosDB"
     },
-    image: "https://laserx.vercel.app/assests/images/Portfolio.png"
+    image: "/projects/bosdb.png"
   },
   {
     title: "Lenskart Optimetry Centre",
