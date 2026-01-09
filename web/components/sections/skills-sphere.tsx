@@ -1,81 +1,120 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useMemo, useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls, Float } from "@react-three/drei";
+import * as THREE from "three";
 import { skills } from "@/lib/data";
+
+function Sphere({ skill, position }: { skill: typeof skills[0], position: [number, number, number] }) {
+    const meshRef = useRef<THREE.Mesh>(null);
+
+    useFrame((state) => {
+        if (meshRef.current) {
+            // Gentle floating rotation
+            meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.2;
+            meshRef.current.rotation.y += 0.01;
+        }
+    });
+
+    return (
+        <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+            <mesh ref={meshRef} position={position}>
+                <sphereGeometry args={[0.5, 16, 16]} />
+                <meshStandardMaterial
+                    color="#7c3aed"
+                    emissive="#7c3aed"
+                    emissiveIntensity={0.3}
+                    roughness={0.3}
+                    metalness={0.8}
+                />
+            </mesh>
+        </Float>
+    );
+}
+
+function SkillsSphereCloud() {
+    const positions = useMemo(() => {
+        const temp: Array<[number, number, number]> = [];
+        const radius = 8;
+
+        // Fibonacci sphere distribution for even spacing
+        skills.forEach((_, i) => {
+            const phi = Math.acos(-1 + (2 * i) / skills.length);
+            const theta = Math.sqrt(skills.length * Math.PI) * phi;
+
+            const x = radius * Math.cos(theta) * Math.sin(phi);
+            const y = radius * Math.sin(theta) * Math.sin(phi);
+            const z = radius * Math.cos(phi);
+
+            temp.push([x, y, z]);
+        });
+
+        return temp;
+    }, []);
+
+    return (
+        <>
+            {skills.map((skill, i) => (
+                <Sphere key={skill.name} skill={skill} position={positions[i]} />
+            ))}
+        </>
+    );
+}
 
 export function SkillsSphere() {
     return (
-        <section id="skills" className="py-20 md:py-32 bg-gradient-to-b from-background to-neutral-900 relative overflow-hidden">
-            <div className="container mx-auto px-4 md:px-6 max-w-6xl">
-                <div className="text-center mb-12">
-                    <h2 className="text-4xl md:text-6xl font-bold font-heading mb-4">
-                        Tech <span className="text-primary">Universe</span>
-                    </h2>
-                    <p className="text-muted-foreground text-lg">
-                        Technologies I work with
-                    </p>
-                </div>
+        <section id="skills" className="h-screen flex flex-col items-center justify-center bg-gradient-to-b from-background to-neutral-900 relative overflow-hidden">
+            <div className="absolute top-20 z-10 text-center">
+                <h2 className="text-4xl md:text-6xl font-bold font-heading mb-4">
+                    Tech <span className="text-primary">Universe</span>
+                </h2>
+                <p className="text-muted-foreground text-lg">
+                    Drag to explore • {skills.length} technologies
+                </p>
+            </div>
 
-                {/* Skills Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    {skills.map((skill, idx) => (
-                        <motion.div
-                            key={skill.name}
-                            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                            whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: idx * 0.03, duration: 0.3 }}
-                            whileHover={{ scale: 1.05, y: -5 }}
-                            className="group relative"
-                        >
-                            <div className="bg-card border border-border rounded-lg p-4 h-full flex flex-col items-center justify-center gap-2 hover:border-primary hover:bg-primary/5 transition-all cursor-pointer">
-                                <div className="text-2xl font-bold text-primary/20 group-hover:text-primary/40 transition-colors">
-                                    {skill.level}
-                                </div>
-                                <h3 className="text-sm font-semibold text-center group-hover:text-primary transition-colors">
-                                    {skill.name}
-                                </h3>
-                                <span className="text-xs text-muted-foreground">
-                                    {skill.category}
-                                </span>
+            <div className="w-full h-full">
+                <Canvas camera={{ position: [0, 0, 20], fov: 75 }}>
+                    <color attach="background" args={['#000000']} />
+                    <ambientLight intensity={0.5} />
+                    <pointLight position={[10, 10, 10]} intensity={1} />
+                    <pointLight position={[-10, -10, -10]} intensity={0.5} />
 
-                                {/* Progress bar */}
-                                <div className="w-full h-1 bg-secondary rounded-full overflow-hidden mt-2">
-                                    <motion.div
-                                        className="h-full bg-gradient-to-r from-primary to-cyan-400"
-                                        initial={{ width: 0 }}
-                                        whileInView={{ width: `${skill.level}%` }}
-                                        viewport={{ once: true }}
-                                        transition={{ delay: idx * 0.03 + 0.2, duration: 0.5 }}
-                                    />
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
+                    <SkillsSphereCloud />
 
-                {/* Floating background elements */}
-                <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-                    {[...Array(20)].map((_, i) => (
-                        <motion.div
-                            key={i}
-                            className="absolute w-2 h-2 bg-primary/20 rounded-full"
-                            style={{
-                                left: `${Math.random() * 100}%`,
-                                top: `${Math.random() * 100}%`,
-                            }}
-                            animate={{
-                                y: [0, -30, 0],
-                                opacity: [0.2, 0.5, 0.2],
-                            }}
-                            transition={{
-                                duration: 3 + Math.random() * 2,
-                                repeat: Infinity,
-                                delay: Math.random() * 2,
-                            }}
-                        />
-                    ))}
-                </div>
+                    <OrbitControls
+                        enableZoom={false}
+                        enablePan={false}
+                        autoRotate
+                        autoRotateSpeed={0.5}
+                        minPolarAngle={Math.PI / 4}
+                        maxPolarAngle={Math.PI * 0.75}
+                    />
+
+                    {/* Stars background */}
+                    <mesh>
+                        <sphereGeometry args={[50, 32, 32]} />
+                        <meshBasicMaterial color="#000000" side={THREE.BackSide} />
+                    </mesh>
+                </Canvas>
+            </div>
+
+            {/* Skills List Overlay */}
+            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-wrap gap-2 max-w-4xl justify-center px-4 z-10">
+                {skills.slice(0, 10).map((skill) => (
+                    <span
+                        key={skill.name}
+                        className="text-xs px-3 py-1 bg-background/80 backdrop-blur border border-primary/30 text-primary rounded-full font-medium"
+                    >
+                        {skill.name}
+                    </span>
+                ))}
+                {skills.length > 10 && (
+                    <span className="text-xs px-3 py-1 bg-background/80 backdrop-blur border border-border text-muted-foreground rounded-full">
+                        +{skills.length - 10} more
+                    </span>
+                )}
             </div>
         </section>
     );
