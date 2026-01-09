@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
+import { Preloader } from "@/components/ui/preloader";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -42,6 +43,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            {/* <Preloader /> */}
             <ScrollProgress />
             {/* Navbar will be replaced by Dock later, keeping for now or hiding */}
             {/* <Navbar /> */}

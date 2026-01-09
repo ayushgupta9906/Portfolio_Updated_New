@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useTheme } from "next-themes";
@@ -44,12 +44,12 @@ function StarField() {
 
         const positions = mesh.current.geometry.attributes.position.array as Float32Array;
 
-        // Speed factor
-        const speed = 10 * delta;
+        // Speed factor (Boost or Normal)
+        const currentSpeed = isBoosting ? 100 * delta : 10 * delta;
 
         for (let i = 0; i < count; i++) {
             let zIndex = i * 3 + 2;
-            positions[zIndex] += speed;
+            positions[zIndex] += currentSpeed;
 
             // Reset if too close
             if (positions[zIndex] > 20) {
@@ -59,6 +59,20 @@ function StarField() {
         mesh.current.geometry.attributes.position.needsUpdate = true;
         mesh.current.rotation.z += delta * 0.1; // Slight spin
     });
+
+    const [isBoosting, setIsBoosting] = useState(false);
+
+    useEffect(() => {
+        const handleMouseDown = () => setIsBoosting(true);
+        const handleMouseUp = () => setIsBoosting(false);
+
+        window.addEventListener("mousedown", handleMouseDown);
+        window.addEventListener("mouseup", handleMouseUp);
+        return () => {
+            window.removeEventListener("mousedown", handleMouseDown);
+            window.removeEventListener("mouseup", handleMouseUp);
+        }
+    }, []);
 
     return (
         <points ref={mesh}>

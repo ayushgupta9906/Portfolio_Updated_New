@@ -30,11 +30,8 @@ export const experience = [
     role: "Software Engineer",
     company: "Current Company", // Placeholder, waiting for resume data
     period: "Present",
-    description: [
-      "Building scalable applications with Next.js and Cloud Native technologies.",
-      "Integrting Generative AI agents into production workflows.",
-      "Optimizing frontend performance for high-traffic dashboards."
-    ]
+    location: "Noida, India",
+    description: "Full-Stack Developer & AI Engineer building the future of web with Next.js, Rust, and Generative AI Agents."
   },
   {
     role: "SDE Intern",
@@ -63,11 +60,16 @@ export const skills = [
   { name: "TypeScript", level: 95, category: "Core" },
   { name: "React Server Components", level: 90, category: "Core" },
   { name: "Rust", level: 60, category: "Backend" },
-  { name: "Go (Golang)", level: 70, category: "Backend" },
+  { name: "Golang", level: 75, category: "Backend" },
+  { name: "Docker", level: 85, category: "DevOps" },
+  { name: "Kubernetes", level: 70, category: "DevOps" },
+  { name: "AWS", level: 80, category: "Cloud" },
+  { name: "Terraform", level: 65, category: "DevOps" },
+  { name: "GenAI Agents", level: 90, category: "AI" },
+  { name: "LLMs", level: 85, category: "AI" },
   { name: "PostgreSQL", level: 85, category: "Database" },
   { name: "Three.js / R3F", level: 80, category: "Creative" },
   { name: "GLSL Shaders", level: 65, category: "Creative" },
-  { name: "Generative AI (LLMs)", level: 85, category: "AI" },
   { name: "LangChain", level: 80, category: "AI" },
 ];
 
