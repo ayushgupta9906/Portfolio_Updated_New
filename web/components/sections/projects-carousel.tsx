@@ -7,14 +7,21 @@ import Image from "next/image";
 import { projects } from "@/lib/data";
 
 import { ProjectPreview } from "@/components/ui/project-preview";
+import { ProjectHoverPopup } from "@/components/ui/project-hover-popup";
 import { Eye } from "lucide-react";
 
 export function ProjectsCarousel() {
     const [index, setIndex] = useState(0);
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+    const [isHovering, setIsHovering] = useState(false);
 
     const next = () => setIndex((prev) => (prev + 1) % projects.length);
     const prev = () => setIndex((prev) => (prev - 1 + projects.length) % projects.length);
+
+    const handleOpenPreview = () => {
+        setIsPreviewOpen(true);
+        setIsHovering(false);
+    };
 
     return (
         <section id="projects" className="py-20 h-screen flex flex-col items-center justify-center relative overflow-hidden">
@@ -31,7 +38,9 @@ export function ProjectsCarousel() {
                         exit={{ opacity: 0, rotateY: -90, x: -200 }}
                         transition={{ duration: 0.6, type: "spring" }}
                         className="absolute w-[80%] md:w-[60%] aspect-video bg-card border border-primary/30 rounded-xl overflow-hidden shadow-[0_0_50px_rgba(124,58,237,0.2)] cursor-pointer group"
-                        onClick={() => setIsPreviewOpen(true)}
+                        onClick={handleOpenPreview}
+                        onMouseEnter={() => setIsHovering(true)}
+                        onMouseLeave={() => setIsHovering(false)}
                         whileHover={{ scale: 1.05, rotateX: 5 }}
                     >
                         <div className="relative w-full h-full">
@@ -71,6 +80,13 @@ export function ProjectsCarousel() {
                             <div className="absolute top-4 right-4 bg-black/60 backdrop-blur px-3 py-1 rounded text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest border border-white/10">
                                 Click to Preview
                             </div>
+
+                            {/* Hover Popup */}
+                            <ProjectHoverPopup
+                                isVisible={isHovering}
+                                title={projects[index].title}
+                                tech={projects[index].tech}
+                            />
                         </div>
                     </motion.div>
                 </AnimatePresence>
@@ -86,8 +102,14 @@ export function ProjectsCarousel() {
 
             <ProjectPreview
                 url={projects[index].links.demo || "#"}
+                title={projects[index].title}
+                tech={projects[index].tech}
                 isOpen={isPreviewOpen}
                 onClose={() => setIsPreviewOpen(false)}
+                onNext={next}
+                onPrevious={prev}
+                currentIndex={index}
+                totalProjects={projects.length}
             />
         </section>
     );
