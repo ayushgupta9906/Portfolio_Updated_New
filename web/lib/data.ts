@@ -169,7 +169,7 @@ export const aboutContent = {
   resumeUrl: "/Ayush_Gupta_Resume.pdf",
 };
 
-// Real projects from resume
+// Real projects from resume and portfolio
 export const projects = [
   {
     title: "BosDB – Browser Based Database with Version Control",
@@ -188,6 +188,56 @@ export const projects = [
     links: {
       demo: "https://laserx-store.vercel.app",
       code: "https://github.com/ayushgupta9906/LaserX"
+    },
+    image: "/project_placeholder.png"
+  },
+  {
+    title: "Portfolio Website",
+    description: "Modern, interactive portfolio showcasing projects and experience with 3D animations, dark mode, and responsive design. Built with latest web technologies.",
+    tech: ["Next.js", "TypeScript", "Three.js", "Framer Motion", "Tailwind CSS"],
+    links: {
+      demo: "https://ayushgdev.vercel.app",
+      code: "https://github.com/ayushgupta9906/Portfolio_Updated_New"
+    },
+    image: "/project_placeholder.png"
+  },
+  {
+    title: "SafeMaX Security",
+    description: "AI-Powered VAPT & Cybersecurity Dashboard for vulnerability assessment and penetration testing with machine learning-based threat detection.",
+    tech: ["Next.js", "Python", "TensorFlow", "MongoDB", "FastAPI"],
+    links: {
+      demo: "https://safemax-security.vercel.app",
+      code: "https://github.com/ayushgupta9906/SafeMaX"
+    },
+    image: "/project_placeholder.png"
+  },
+  {
+    title: "India's Got Latent",
+    description: "Interactive platform inspired by talent shows, featuring real-time voting, user submissions, and engaging UI/UX for discovering hidden talents.",
+    tech: ["React", "Node.js", "Express.js", "MongoDB", "Socket.io"],
+    links: {
+      demo: "https://indiasgotlatent.vercel.app",
+      code: "https://github.com/ayushgupta9906/IndiaGotLatent"
+    },
+    image: "/project_placeholder.png"
+  },
+  {
+    title: "LaserX Acad",
+    description: "Educational learning management system with course management, student tracking, assignments, and interactive learning modules.",
+    tech: ["Next.js", "TypeScript", "MongoDB", "Redux", "Tailwind CSS"],
+    links: {
+      demo: "https://laserx-acad.vercel.app",
+      code: "https://github.com/ayushgupta9906/LaserXAcad"
+    },
+    image: "/project_placeholder.png"
+  },
+  {
+    title: "SAE ZHCET Website",
+    description: "Developed responsive web application for SAE-ZHCET automotive club, managing events, team, and community using modern web stack.",
+    tech: ["React.js", "Node.js", "MongoDB", "Express.js", "Google Cloud"],
+    links: {
+      demo: "https://saezhcet.in",
+      code: "https://github.com/ayushgupta9906/SAE-Website"
     },
     image: "/project_placeholder.png"
   },
