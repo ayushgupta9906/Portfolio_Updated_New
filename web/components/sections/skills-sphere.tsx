@@ -1,12 +1,13 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, Float, Html } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls, Float } from "@react-three/drei";
 import * as THREE from "three";
 import { skills } from "@/lib/data";
+import { motion } from "framer-motion";
 
-function SkillSphere({ skill, position }: { skill: typeof skills[0], position: [number, number, number] }) {
+function SkillSphere({ skill, position, onHover }: { skill: typeof skills[0], position: [number, number, number], onHover: (name: string | null) => void }) {
     const meshRef = useRef<THREE.Mesh>(null);
     const [hovered, setHovered] = useState(false);
 
@@ -22,40 +23,29 @@ function SkillSphere({ skill, position }: { skill: typeof skills[0], position: [
             <mesh
                 ref={meshRef}
                 position={position}
-                onPointerEnter={() => setHovered(true)}
-                onPointerLeave={() => setHovered(false)}
+                onPointerEnter={() => {
+                    setHovered(true);
+                    onHover(skill.name);
+                }}
+                onPointerLeave={() => {
+                    setHovered(false);
+                    onHover(null);
+                }}
             >
                 <sphereGeometry args={[1.8, 24, 24]} />
                 <meshStandardMaterial
                     color={hovered ? "#a78bfa" : "#7c3aed"}
                     emissive="#7c3aed"
-                    emissiveIntensity={hovered ? 0.6 : 0.3}
+                    emissiveIntensity={hovered ? 0.8 : 0.3}
                     roughness={0.3}
                     metalness={0.8}
                 />
-
-                {/* Text Label */}
-                <Html
-                    position={[0, 0, 0]}
-                    center
-                    distanceFactor={4}
-                    style={{
-                        pointerEvents: 'none',
-                        userSelect: 'none',
-                    }}
-                >
-                    <div className="bg-black/95 backdrop-blur-md px-6 py-4 rounded-2xl border-3 border-primary/80 whitespace-nowrap shadow-2xl">
-                        <span className="text-2xl font-extrabold text-white tracking-wide">
-                            {skill.name}
-                        </span>
-                    </div>
-                </Html>
             </mesh>
         </Float>
     );
 }
 
-function SkillsSphereCloud() {
+function SkillsSphereCloud({ onHover }: { onHover: (name: string | null) => void }) {
     const positions = useMemo(() => {
         const temp: Array<[number, number, number]> = [];
         const radius = 8;
@@ -77,25 +67,36 @@ function SkillsSphereCloud() {
     return (
         <>
             {skills.map((skill, i) => (
-                <SkillSphere key={skill.name} skill={skill} position={positions[i]} />
+                <SkillSphere key={skill.name} skill={skill} position={positions[i]} onHover={onHover} />
             ))}
         </>
     );
 }
 
 export function SkillsSphere() {
+    const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
+
     return (
-        <section id="skills" className="h-screen flex flex-col items-center justify-center bg-gradient-to-b from-background to-neutral-900 relative overflow-hidden">
+        <section id="skills" className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-background to-neutral-900 relative overflow-hidden py-20">
             <div className="absolute top-20 z-10 text-center">
                 <h2 className="text-4xl md:text-6xl font-bold font-heading mb-4">
                     Tech <span className="text-primary">Universe</span>
                 </h2>
-                <p className="text-muted-foreground text-lg">
+                <p className="text-muted-foreground text-lg mb-2">
                     Drag to explore • Hover to highlight • {skills.length} technologies
                 </p>
+                {hoveredSkill && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-4 px-6 py-3 bg-primary/90 text-primary-foreground rounded-full inline-block font-bold text-xl shadow-xl"
+                    >
+                        {hoveredSkill}
+                    </motion.div>
+                )}
             </div>
 
-            <div className="w-full h-full">
+            <div className="w-full h-[600px]">
                 <Canvas camera={{ position: [0, 0, 32], fov: 75 }}>
                     <color attach="background" args={['#000000']} />
                     <ambientLight intensity={0.5} />
@@ -103,7 +104,7 @@ export function SkillsSphere() {
                     <pointLight position={[-10, -10, -10]} intensity={0.5} />
                     <pointLight position={[0, 10, 0]} intensity={0.5} color="#7c3aed" />
 
-                    <SkillsSphereCloud />
+                    <SkillsSphereCloud onHover={setHoveredSkill} />
 
                     <OrbitControls
                         enableZoom={false}
@@ -121,16 +122,21 @@ export function SkillsSphere() {
                 </Canvas>
             </div>
 
-            {/* Category Legend */}
-            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-wrap gap-2 max-w-5xl justify-center px-4 z-10">
-                {Array.from(new Set(skills.map(s => s.category))).map((category) => (
-                    <span
-                        key={category}
-                        className="text-xs px-3 py-1 bg-background/80 backdrop-blur border border-primary/30 text-primary rounded-full font-medium"
-                    >
-                        {category}
-                    </span>
-                ))}
+            {/* All Skills Grid - Visible and Clear */}
+            <div className="mt-12 max-w-6xl px-4">
+                <h3 className="text-2xl font-bold text-center mb-6">All Technologies</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                    {skills.map((skill) => (
+                        <motion.div
+                            key={skill.name}
+                            whileHover={{ scale: 1.05 }}
+                            className="px-4 py-3 bg-card border-2 border-border rounded-lg text-center hover:border-primary hover:bg-primary/5 transition-all cursor-pointer"
+                        >
+                            <div className="text-lg font-bold">{skill.name}</div>
+                            <div className="text-xs text-muted-foreground mt-1">{skill.category}</div>
+                        </motion.div>
+                    ))}
+                </div>
             </div>
         </section>
     );
