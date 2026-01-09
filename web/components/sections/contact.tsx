@@ -69,8 +69,8 @@ export function Contact() {
                             method="POST"
                             className="space-y-6"
                         >
-                            {/* Web3Forms Access Key - Replace with your own */}
-                            <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY" />
+                            {/* Web3Forms Access Key */}
+                            <input type="hidden" name="access_key" value="df794aee-6976-4448-817f-78ea7549b0b4" />
                             <input type="hidden" name="subject" value="New Contact Form Submission from Portfolio" />
                             <input type="hidden" name="from_name" value="Portfolio Contact Form" />
 
