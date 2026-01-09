@@ -18,11 +18,11 @@ export function Contact() {
                         transition={{ duration: 0.8 }}
                     >
                         <h2 className="text-3xl md:text-5xl font-bold font-heading mb-6">
-                            Let's <span className="text-primary">Connect</span>
+                            Let&apos;s Build <span className="text-primary">Something Great</span>
                         </h2>
                         <p className="text-lg text-muted-foreground mb-8">
-                            Have a project in mind or just want to chat? Feel free to reach out.
-                            I'm always open to discussing new projects, creative ideas or opportunities to be part of your visions.
+                            Looking for a developer to bring your ideas to life? I&apos;m available for freelance projects, consulting, and full-time opportunities.
+                            Let&apos;s discuss how we can work together to build something extraordinary.
                         </p>
 
                         <div className="space-y-6">

@@ -158,15 +158,15 @@ export const heroRoles = [
 ];
 
 export const aboutContent = {
-  title: "The Architect",
+  title: "Software Engineer & Full-Stack Developer",
   description: [
-    "I don't just write code; I build digital ecosystems.",
-    "Merging the precision of Engineering with the boundless creativity of 3D Web & AI.",
-    "Currently architecting the future of web interfaces.",
-    "Always betting on the bleeding edge."
+    "Transforming complex problems into elegant solutions through code.",
+    "Specializing in scalable enterprise systems, modern web architectures, and intelligent automation.",
+    "Currently building production-grade applications at Newgen Software Technologies.",
+    "Passionate about clean code, system design, and pushing technological boundaries."
   ],
-  location: "India",
-  resumeUrl: "/Ayush_Gupta_Resume.pdf", // User pointed to files folder
+  location: "Noida, India",
+  resumeUrl: "/Ayush_Gupta_Resume.pdf",
 };
 
 // Real projects from resume
@@ -205,21 +205,21 @@ export const education = [
     degree: "B.Tech Mechanical Engineering",
     institution: "ZHCET, AMU",
     period: "2021 - 2025",
-    status: "Graduating",
-    notes: "Pivoted to Computational Design & Software Engineering. Focused on Full-Stack Development, AI/ML, and 3D Web Technologies."
+    status: "Graduated",
+    notes: "Pivoted to Computational Design & Software Engineering. Specialized in Full-Stack Development, AI/ML, and Modern Web Technologies."
   },
   {
     degree: "Higher Secondary (XII) - Science",
-    institution: "Senior Secondary School",
-    period: "2019 - 2021",
-    status: "Completed",
-    notes: "Physics, Chemistry, Mathematics - Foundation for engineering and computational thinking."
+    institution: "Kendriya Vidyalaya JLA Bareilly Cantt",
+    period: "2020 - 2021",
+    status: "94.6%",
+    notes: "Physics, Chemistry, Mathematics - Strong foundation in engineering fundamentals."
   },
   {
     degree: "Secondary (X)",
-    institution: "High School",
+    institution: "Kendriya Vidyalaya JLA Bareilly Cantt",
     period: "2018 - 2019",
-    status: "Completed",
-    notes: "Academic excellence with focus on STEM subjects."
+    status: "94.8%",
+    notes: "Academic excellence across all subjects with focus on Mathematics and Science."
   }
 ];

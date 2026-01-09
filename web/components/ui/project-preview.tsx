@@ -122,16 +122,22 @@ export function ProjectPreview({
 
                         {/* Navigation Arrows - Simple */}
                         <button
-                            onClick={(e) => { e.stopPropagation(); onPrevious(); }}
-                            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-background border border-border rounded-lg hover:bg-primary hover:text-primary-foreground transition-colors shadow-lg z-20"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onPrevious();
+                            }}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-background border border-border rounded-lg hover:bg-primary hover:text-primary-foreground transition-all duration-200 shadow-lg z-20 active:scale-95"
                             title="Previous"
                         >
                             <ChevronLeft className="w-5 h-5" />
                         </button>
 
                         <button
-                            onClick={(e) => { e.stopPropagation(); onNext(); }}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-background border border-border rounded-lg hover:bg-primary hover:text-primary-foreground transition-colors shadow-lg z-20"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onNext();
+                            }}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-background border border-border rounded-lg hover:bg-primary hover:text-primary-foreground transition-all duration-200 shadow-lg z-20 active:scale-95"
                             title="Next"
                         >
                             <ChevronRight className="w-5 h-5" />
