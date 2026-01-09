@@ -25,7 +25,7 @@ function SkillSphere({ skill, position }: { skill: typeof skills[0], position: [
                 onPointerEnter={() => setHovered(true)}
                 onPointerLeave={() => setHovered(false)}
             >
-                <sphereGeometry args={[1.2, 20, 20]} />
+                <sphereGeometry args={[1.8, 24, 24]} />
                 <meshStandardMaterial
                     color={hovered ? "#a78bfa" : "#7c3aed"}
                     emissive="#7c3aed"
@@ -38,14 +38,14 @@ function SkillSphere({ skill, position }: { skill: typeof skills[0], position: [
                 <Html
                     position={[0, 0, 0]}
                     center
-                    distanceFactor={6}
+                    distanceFactor={5}
                     style={{
                         pointerEvents: 'none',
                         userSelect: 'none',
                     }}
                 >
-                    <div className="bg-black/95 backdrop-blur-md px-4 py-2.5 rounded-xl border-2 border-primary/60 whitespace-nowrap shadow-2xl">
-                        <span className="text-lg font-bold text-white">
+                    <div className="bg-black/95 backdrop-blur-md px-5 py-3 rounded-xl border-2 border-primary/70 whitespace-nowrap shadow-2xl">
+                        <span className="text-xl font-bold text-white">
                             {skill.name}
                         </span>
                     </div>
@@ -96,7 +96,7 @@ export function SkillsSphere() {
             </div>
 
             <div className="w-full h-full">
-                <Canvas camera={{ position: [0, 0, 28], fov: 75 }}>
+                <Canvas camera={{ position: [0, 0, 32], fov: 75 }}>
                     <color attach="background" args={['#000000']} />
                     <ambientLight intensity={0.5} />
                     <pointLight position={[10, 10, 10]} intensity={1} />
