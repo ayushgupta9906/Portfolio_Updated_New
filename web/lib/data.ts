@@ -172,81 +172,134 @@ export const aboutContent = {
 // Real projects from resume and portfolio
 export const projects = [
   {
-    title: "BosDB – Browser Based Database with Version Control",
-    description: "Architected a browser-based database platform with a native Git-like version control system for schema and data changes. Enabled commits, branches, merges, cherry-pick, and rollback directly on live databases.",
+    title: "BosDB – Browser Based Database",
+    description: "Architected a browser-based database platform with a native Git-like version control system for schema and data changes. Enabled commits, branches, merges, and rollback.",
     tech: ["Next.js", "TypeScript", "Node.js", "PostgreSQL", "MongoDB", "Redis", "Docker"],
     links: {
       demo: "https://bosdb.vercel.app",
       code: "https://github.com/ayushgupta9906/BosDB"
     },
-    image: "/project_placeholder.png"
+    image: "https://laserx.vercel.app/assests/images/Portfolio.png"
   },
   {
-    title: "LaserX Clothing Store",
-    description: "Built a production-grade e-commerce platform with advanced filtering, product variants, and media-rich catalogs. Integrated Google OAuth, JWT authentication, and Stripe payments with secure multi-currency checkout.",
-    tech: ["React.js", "Next.js", "Express.js", "MongoDB", "Stripe", "Nodemailer"],
+    title: "Lenskart Optimetry Centre",
+    description: "Lenskart Stores providing free eye test near you. Functional eye testing service portal with location-based optometrist services.",
+    tech: ["React", "Node.js", "Express", "Location API"],
     links: {
-      demo: "https://laserx-store.vercel.app",
-      code: "https://github.com/ayushgupta9906/LaserX"
+      demo: "https://www.lenskart.com/eyetestnear",
+      code: "#"
     },
-    image: "/project_placeholder.png"
-  },
-  {
-    title: "Portfolio Website",
-    description: "Modern, interactive portfolio showcasing projects and experience with 3D animations, dark mode, and responsive design. Built with latest web technologies.",
-    tech: ["Next.js", "TypeScript", "Three.js", "Framer Motion", "Tailwind CSS"],
-    links: {
-      demo: "https://ayushgdev.vercel.app",
-      code: "https://github.com/ayushgupta9906/Portfolio_Updated_New"
-    },
-    image: "/project_placeholder.png"
+    image: "https://laserx.vercel.app/assests/images/lenskart.png"
   },
   {
     title: "SafeMaX Security",
-    description: "AI-Powered VAPT & Cybersecurity Dashboard for vulnerability assessment and penetration testing with machine learning-based threat detection.",
-    tech: ["Next.js", "Python", "TensorFlow", "MongoDB", "FastAPI"],
+    description: "A full-stack web application for SafeMax Security, offering VAPT services and cybersecurity solutions. Built with React, Node.js, Express, and MongoDB.",
+    tech: ["React", "Node.js", "Express", "MongoDB", "Cybersecurity"],
     links: {
-      demo: "https://safemax-security.vercel.app",
-      code: "https://github.com/ayushgupta9906/SafeMaX"
+      demo: "https://safemaxx.onrender.com/",
+      code: "https://github.com/ayushgupta9906/SafeMaxx"
     },
-    image: "/project_placeholder.png"
+    image: "https://laserx.vercel.app/assests/images/Screenshot%202024-11-20%20164712.png"
+  },
+  {
+    title: "LaserX ClothingStore",
+    description: "Full-stack e-commerce website for a clothing store. Built with React, Node.js, Express, and MongoDB. Multi-currency support.",
+    tech: ["React", "Node.js", "Express", "MongoDB", "Stripe"],
+    links: {
+      demo: "https://safemaxx.onrender.com/",
+      code: "https://github.com/ayushgupta9906/LaserX-Clothing-Store"
+    },
+    image: "https://laserx.vercel.app/assests/images/Screenshot%202024-11-20%20165510.png"
   },
   {
     title: "India's Got Latent",
-    description: "Interactive platform inspired by talent shows, featuring real-time voting, user submissions, and engaging UI/UX for discovering hidden talents.",
-    tech: ["React", "Node.js", "Express.js", "MongoDB", "Socket.io"],
+    description: "Interactive platform inspired by the talent show, featuring real-time engagement and a modern UI for discovering talents.",
+    tech: ["React", "Node.js", "Vercel", "Tailwind CSS"],
     links: {
-      demo: "https://indiasgotlatent.vercel.app",
-      code: "https://github.com/ayushgupta9906/IndiaGotLatent"
+      demo: "https://iglatent.vercel.app/",
+      code: "https://github.com/ayushgupta9906/India-s-Got-Latent"
     },
-    image: "/project_placeholder.png"
+    image: "https://laserx.vercel.app/assests/images/latent.png"
   },
   {
-    title: "LaserX Acad",
-    description: "Educational learning management system with course management, student tracking, assignments, and interactive learning modules.",
-    tech: ["Next.js", "TypeScript", "MongoDB", "Redux", "Tailwind CSS"],
+    title: "Zepto New Features",
+    description: "These are newly features made for Zepto and can provide better sales through enhanced user interaction and optimized flows.",
+    tech: ["React", "UI/UX", "Product Design"],
     links: {
-      demo: "https://laserx-acad.vercel.app",
-      code: "https://github.com/ayushgupta9906/LaserXAcad"
+      demo: "https://zeptonew.vercel.app/",
+      code: "https://github.com/ayushgupta9906/New-Features-Zepto"
     },
-    image: "/project_placeholder.png"
+    image: "https://laserx.vercel.app/assests/images/zepto.jpg"
+  },
+  {
+    title: "Blinkit New Features",
+    description: "New feature implementations for Blinkit to improve delivery transparency and user retention. Focused on conversion optimization.",
+    tech: ["React", "Analytics", "Optimization"],
+    links: {
+      demo: "https://blinkit1.vercel.app/",
+      code: "https://github.com/ayushgupta9906/features-update"
+    },
+    image: "https://laserx.vercel.app/assests/images/jpg.webp"
+  },
+  {
+    title: "Element Style Extractor",
+    description: "This Extension (script) lets you inspect and copy HTML/CSS of elements with just one click for free. A developer productivity tool.",
+    tech: ["JavaScript", "DOM API", "Chrome Extension"],
+    links: {
+      demo: "https://laserx.vercel.app/",
+      code: "https://github.com/ayushgupta9906/Element-Style-Extractor"
+    },
+    image: "https://laserx.vercel.app/assests/images/htmlcss%20ext.png"
   },
   {
     title: "SAE ZHCET Website",
-    description: "Developed responsive web application for SAE-ZHCET automotive club, managing events, team, and community using modern web stack.",
-    tech: ["React.js", "Node.js", "MongoDB", "Express.js", "Google Cloud"],
+    description: "Responsive automotive club website for SAE-ZHCET, managing events, team data, and community interactions.",
+    tech: ["React", "Node.js", "MongoDB", "Express"],
     links: {
-      demo: "https://saezhcet.in",
-      code: "https://github.com/ayushgupta9906/SAE-Website"
+      demo: "https://ayushgupta9906.github.io/saewebmaster/",
+      code: "https://github.com/ayushgupta9906/saewebmaster"
     },
-    image: "/project_placeholder.png"
+    image: "https://laserx.vercel.app/assests/images/saezhcet.png"
   },
   {
-    title: "Remote Optometry Service",
-    description: "Pioneered remote eye testing solution for LENSKART, enabling tests without in-store optometrists. Implemented intelligent staff allocation reducing dropouts by 13%.",
-    tech: ["React", "Node.js", "MongoDB", "WebRTC"],
-    links: { demo: "#", code: "#" },
-    image: "/project_placeholder.png"
+    title: "SMS-Mail Spam Classifier",
+    description: "Classify emails as spam or not-spam using Naive Bayes, Numpy, Pandas and Sklearn. Real-time inference dashboard.",
+    tech: ["Python", "Numpy", "Pandas", "Sklearn", "Streamlit"],
+    links: {
+      demo: "https://smsspamclassifierlaserx.streamlit.app/",
+      code: "https://github.com/ayushgupta9906/SMS-Spam-Classifier"
+    },
+    image: "https://laserx.vercel.app/assests/images/projects/mlpr.jpg"
+  },
+  {
+    title: "AI Mailer",
+    description: "Using nodemailer to send mail using gmail but with a more secured approach using Google Oauth2 and AI templates.",
+    tech: ["Node.js", "Nodemailer", "Google OAuth2", "AI"],
+    links: {
+      demo: "https://my-ai-mailer.vercel.app/",
+      code: "https://github.com/ayushgupta9906/My-AI-Mailer"
+    },
+    image: "https://laserx.vercel.app/assests/images/images.jpeg"
+  },
+  {
+    title: "InstaFam",
+    description: "Instagram clone App built with React and Redux. Focuses on Hooks, Redux setup, and complex state management.",
+    tech: ["React", "Redux", "Hooks", "React Router"],
+    links: {
+      demo: "https://my-umber-rho.vercel.app/",
+      code: "https://github.com/ayushgupta9906/My"
+    },
+    image: "https://laserx.vercel.app/assests/images/projects/Instagram.png"
+  },
+  {
+    title: "Wine Quality Prediction",
+    description: "Wine-Quality Prediction using ML models. Identified minimal difference between training and validation data, indicating strong generalization.",
+    tech: ["Python", "XgBoost", "Matplotlib", "Seaborn"],
+    links: {
+      demo: "https://github.com/ayushgupta9906/Wine-Quality-Prediction",
+      code: "https://github.com/ayushgupta9906/Wine-Quality-Prediction"
+    },
+    image: "https://laserx.vercel.app/assests/images/Wine.jpeg"
   }
 ];
 
