@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -88,9 +88,7 @@ function Particles() {
             <bufferGeometry>
                 <bufferAttribute
                     attach="attributes-position"
-                    count={count}
-                    array={positions}
-                    itemSize={3}
+                    args={[positions, 3]}
                 />
             </bufferGeometry>
             <pointsMaterial
@@ -104,18 +102,91 @@ function Particles() {
     );
 }
 
+function InteractiveScene() {
+    const groupRef = useRef<THREE.Group>(null!);
+    const targetRotation = useRef({ x: 0, y: 0 });
+    const currentRotation = useRef({ x: 0, y: 0 });
+    const isDragging = useRef(false);
+    const lastMousePos = useRef({ x: 0, y: 0 });
+
+    useFrame(() => {
+        // Smooth interpolation (lerp)
+        currentRotation.current.x += (targetRotation.current.x - currentRotation.current.x) * 0.05;
+        currentRotation.current.y += (targetRotation.current.y - currentRotation.current.y) * 0.05;
+
+        if (groupRef.current) {
+            groupRef.current.rotation.x = currentRotation.current.x;
+            groupRef.current.rotation.y = currentRotation.current.y;
+
+            // Add subtle parallax based on rotation
+            groupRef.current.position.x = currentRotation.current.y * 5;
+            groupRef.current.position.y = -currentRotation.current.x * 5;
+        }
+    });
+
+    useEffect(() => {
+        const handleMouseDown = (e: MouseEvent) => {
+            // Only drag if left clicking on non-interactive elements
+            const target = e.target as HTMLElement;
+            if (target.closest('button, a, input, [role="button"]')) return;
+
+            isDragging.current = true;
+            lastMousePos.current = { x: e.clientX, y: e.clientY };
+        };
+
+        const handleMouseUp = () => {
+            isDragging.current = false;
+        };
+
+        const handleMouseMove = (e: MouseEvent) => {
+            if (!isDragging.current) {
+                // Subtle mouse follow when not dragging
+                const x = (e.clientX / window.innerWidth - 0.5) * 0.2;
+                const y = (e.clientY / window.innerHeight - 0.5) * 0.2;
+                targetRotation.current.y = x;
+                targetRotation.current.x = y;
+                return;
+            }
+
+            const deltaX = e.clientX - lastMousePos.current.x;
+            const deltaY = e.clientY - lastMousePos.current.y;
+
+            targetRotation.current.y += deltaX * 0.002;
+            targetRotation.current.x += deltaY * 0.002;
+
+            lastMousePos.current = { x: e.clientX, y: e.clientY };
+        };
+
+        window.addEventListener('mousedown', handleMouseDown);
+        window.addEventListener('mouseup', handleMouseUp);
+        window.addEventListener('mousemove', handleMouseMove);
+
+        return () => {
+            window.removeEventListener('mousedown', handleMouseDown);
+            window.removeEventListener('mouseup', handleMouseUp);
+            window.removeEventListener('mousemove', handleMouseMove);
+        };
+    }, []);
+
+    return (
+        <group ref={groupRef}>
+            <AuraMesh />
+            <Particles />
+        </group>
+    );
+}
+
 export function WarpBackground() {
     return (
-        <div className="fixed inset-0 z-[-1] bg-black">
-            <Canvas camera={{ position: [0, 10, 30], fov: 60 }}>
+        <div className="fixed inset-0 z-[-1] bg-black cursor-grab active:cursor-grabbing">
+            <Canvas camera={{ position: [0, 10, 30], fov: 60 }} dpr={[1, 2]}>
                 <color attach="background" args={['#020202']} />
                 <fog attach="fog" args={['#020202', 20, 50]} />
                 <ambientLight intensity={0.5} />
                 <pointLight position={[10, 10, 10]} intensity={1} color="#7c3aed" />
                 <pointLight position={[-10, 10, -10]} intensity={1} color="#06b6d4" />
 
-                <AuraMesh />
-                <Particles />
+                <InteractiveScene />
             </Canvas>
 
             {/* Vignette Overlay */}

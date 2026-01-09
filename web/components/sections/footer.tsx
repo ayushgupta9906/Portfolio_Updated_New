@@ -21,7 +21,7 @@ export function Footer() {
                         { icon: Code, label: "Projects Built", value: "20+" },
                         { icon: Sparkles, label: "Technologies", value: "40+" },
                         { icon: Heart, label: "Coffee Consumed", value: "∞" },
-                        { icon: Github, label: "Commits", value: "1000+" }
+                        { icon: Github, label: "Open Source", value: "15+" }
                     ].map((stat, idx) => (
                         <motion.div
                             key={idx}

@@ -6,12 +6,12 @@ import { Typewriter } from "@/components/ui/typewriter";
 
 export function HeroHUD() {
     return (
-        <section className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden z-10">
+        <section className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden z-10 pointer-events-none">
             {/* HUD Scanline Effect */}
             <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%] z-50 opacity-20" />
 
             {/* Content Group */}
-            <div className="flex flex-col items-center gap-6 relative z-20">
+            <div className="flex flex-col items-center gap-6 relative z-20 pointer-events-auto">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}

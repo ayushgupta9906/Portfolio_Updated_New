@@ -152,9 +152,10 @@ export const skills = [
 
 export const heroRoles = [
   "Creative Technologist",
-  "Full-Stack Engineer",
+  "Full-Stack Developer",
   "3D Web Enthusiast",
-  "AI Integrator"
+  "AI Integrator",
+
 ];
 
 export const aboutContent = {
