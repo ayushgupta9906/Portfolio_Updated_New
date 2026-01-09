@@ -1,65 +1,68 @@
 "use client";
 
-import { useMemo, useRef, useState, useEffect } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, Float } from "@react-three/drei";
+import { useMemo, useRef, useState } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls, Float, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { skills } from "@/lib/data";
 
-function SkillSphere({ skill, position, onPositionUpdate }: {
-    skill: typeof skills[0],
-    position: [number, number, number],
-    onPositionUpdate: (name: string, screenPos: { x: number, y: number, z: number }) => void
-}) {
+function SkillSphere({ skill, position }: { skill: typeof skills[0], position: [number, number, number] }) {
     const meshRef = useRef<THREE.Mesh>(null);
     const [hovered, setHovered] = useState(false);
-    const { camera, size } = useThree();
 
     useFrame((state) => {
         if (meshRef.current) {
-            meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.2;
+            // Smooth rotation on its own axis
             meshRef.current.rotation.y += 0.01;
-
-            // Update 2D position for label
-            const vector = new THREE.Vector3(...position);
-            vector.project(camera);
-
-            const x = (vector.x * 0.5 + 0.5) * size.width;
-            const y = (-(vector.y) * 0.5 + 0.5) * size.height;
-
-            onPositionUpdate(skill.name, { x, y, z: vector.z });
         }
     });
 
     return (
         <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-            <mesh
-                ref={meshRef}
-                position={position}
-                onPointerEnter={() => setHovered(true)}
-                onPointerLeave={() => setHovered(false)}
-            >
-                <sphereGeometry args={[2.5, 32, 32]} />
-                <meshStandardMaterial
-                    color={hovered ? "#a78bfa" : "#7c3aed"}
-                    emissive="#7c3aed"
-                    emissiveIntensity={hovered ? 0.8 : 0.3}
-                    roughness={0.3}
-                    metalness={0.8}
-                />
-            </mesh>
+            <group position={position}>
+                <mesh
+                    ref={meshRef}
+                    onPointerEnter={() => setHovered(true)}
+                    onPointerLeave={() => setHovered(false)}
+                >
+                    <sphereGeometry args={[2.5, 32, 32]} />
+                    <meshStandardMaterial
+                        color={hovered ? "#a78bfa" : "#7c3aed"}
+                        emissive="#7c3aed"
+                        emissiveIntensity={hovered ? 0.8 : 0.4}
+                        roughness={0.2}
+                        metalness={0.9}
+                    />
+                </mesh>
+
+                {/* Text Label - Using Html for perfectly smooth tracking */}
+                <Html
+                    position={[0, 0, 0]}
+                    center
+                    distanceFactor={12}
+                    zIndexRange={[100, 0]}
+                    style={{
+                        pointerEvents: 'none',
+                        userSelect: 'none',
+                    }}
+                >
+                    <div className="bg-black/90 backdrop-blur-md px-4 py-2 rounded-xl border-2 border-primary/60 whitespace-nowrap shadow-2xl">
+                        <span className="text-xl font-bold text-white tracking-wide">
+                            {skill.name}
+                        </span>
+                    </div>
+                </Html>
+            </group>
         </Float>
     );
 }
 
-function SkillsSphereCloud({ onPositionUpdate }: {
-    onPositionUpdate: (name: string, screenPos: { x: number, y: number, z: number }) => void
-}) {
+function SkillsSphereCloud() {
     const positions = useMemo(() => {
         const temp: Array<[number, number, number]> = [];
-        const radius = 18; // Increased for more spacing
+        const radius = 22; // Spread even farther apart
 
-
+        // Fibonacci sphere distribution for perfectly even spacing
         skills.forEach((_, i) => {
             const phi = Math.acos(-1 + (2 * i) / skills.length);
             const theta = Math.sqrt(skills.length * Math.PI) * phi;
@@ -81,7 +84,6 @@ function SkillsSphereCloud({ onPositionUpdate }: {
                     key={skill.name}
                     skill={skill}
                     position={positions[i]}
-                    onPositionUpdate={onPositionUpdate}
                 />
             ))}
         </>
@@ -89,67 +91,46 @@ function SkillsSphereCloud({ onPositionUpdate }: {
 }
 
 export function SkillsSphere() {
-    const [labels, setLabels] = useState<Record<string, { x: number, y: number, z: number }>>({});
-
-    const handlePositionUpdate = (name: string, pos: { x: number, y: number, z: number }) => {
-        setLabels(prev => ({ ...prev, [name]: pos }));
-    };
-
     return (
         <section id="skills" className="h-screen flex flex-col items-center justify-center bg-gradient-to-b from-background to-neutral-900 relative overflow-hidden">
+            {/* Clean Header - No extra text */}
             <div className="absolute top-20 z-10 text-center pointer-events-none">
-                <h2 className="text-4xl md:text-6xl font-bold font-heading mb-4">
+                <h2 className="text-4xl md:text-6xl font-bold font-heading">
                     Tech <span className="text-primary">Universe</span>
                 </h2>
             </div>
 
-            <div className="w-full h-full relative">
-                <Canvas camera={{ position: [0, 0, 35], fov: 75 }}>
+            <div className="w-full h-full">
+                <Canvas camera={{ position: [0, 0, 45], fov: 75 }} dpr={[1, 2]}>
                     <color attach="background" args={['#000000']} />
-                    <ambientLight intensity={0.5} />
-                    <pointLight position={[10, 10, 10]} intensity={1} />
-                    <pointLight position={[-10, -10, -10]} intensity={0.5} />
-                    <pointLight position={[0, 10, 0]} intensity={0.5} color="#7c3aed" />
+                    <ambientLight intensity={0.6} />
+                    <pointLight position={[20, 20, 20]} intensity={1.5} />
+                    <pointLight position={[-20, -20, -20]} intensity={0.8} />
+                    <pointLight position={[0, 15, 0]} intensity={1} color="#7c3aed" />
 
-                    <SkillsSphereCloud onPositionUpdate={handlePositionUpdate} />
+                    <SkillsSphereCloud />
 
                     <OrbitControls
                         enableZoom={false}
                         enablePan={false}
                         autoRotate
-                        autoRotateSpeed={0.5}
+                        autoRotateSpeed={0.8}
                         minPolarAngle={Math.PI / 4}
                         maxPolarAngle={Math.PI * 0.75}
                     />
 
-                    <mesh>
-                        <sphereGeometry args={[50, 32, 32]} />
-                        <meshBasicMaterial color="#000000" side={THREE.BackSide} />
-                    </mesh>
+                    {/* Stars/Dust Effect */}
+                    {[...Array(200)].map((_, i) => (
+                        <mesh key={i} position={[
+                            (Math.random() - 0.5) * 100,
+                            (Math.random() - 0.5) * 100,
+                            (Math.random() - 0.5) * 100
+                        ]}>
+                            <sphereGeometry args={[0.1, 8, 8]} />
+                            <meshBasicMaterial color="#ffffff" transparent opacity={Math.random()} />
+                        </mesh>
+                    ))}
                 </Canvas>
-
-                {/* 2D Labels overlay */}
-                <div className="absolute inset-0 pointer-events-none">
-                    {Object.entries(labels).map(([name, pos]) => {
-                        if (pos.z > 1) return null; // Behind camera
-
-                        return (
-                            <div
-                                key={name}
-                                className="absolute -translate-x-1/2 -translate-y-1/2 px-3 py-1.5 bg-black/90 border-2 border-primary/70 rounded-lg backdrop-blur-sm"
-                                style={{
-                                    left: `${pos.x}px`,
-                                    top: `${pos.y}px`,
-                                    opacity: pos.z > 0.5 ? 0.3 : 1,
-                                }}
-                            >
-                                <span className="text-white font-bold text-base whitespace-nowrap">
-                                    {name}
-                                </span>
-                            </div>
-                        );
-                    })}
-                </div>
             </div>
         </section>
     );
