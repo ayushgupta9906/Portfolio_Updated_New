@@ -158,7 +158,7 @@ export const heroRoles = [
 ];
 
 export const aboutContent = {
-  title: "Software Engineer & Full-Stack Developer",
+  title: "Full-Stack Developer",
   description: [
     "Transforming complex problems into elegant solutions through code.",
     "Specializing in scalable enterprise systems, modern web architectures, and intelligent automation.",

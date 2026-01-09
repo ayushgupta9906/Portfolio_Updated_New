@@ -8,6 +8,7 @@ import { ProjectsCarousel } from "@/components/sections/projects-carousel";
 import { ExperienceScroll } from "@/components/sections/experience-scroll";
 import { Education } from "@/components/sections/education";
 import { Contact } from "@/components/sections/contact";
+import { Footer } from "@/components/sections/footer";
 
 export default function Home() {
   return (
@@ -21,6 +22,7 @@ export default function Home() {
       <ProjectsCarousel />
       <Education />
       <Contact />
+      <Footer />
       <FloatingDock />
     </div>
   );

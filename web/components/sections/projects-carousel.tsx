@@ -2,115 +2,131 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import Image from "next/image";
 import { projects } from "@/lib/data";
-
-import { ProjectPreview } from "@/components/ui/project-preview";
-import { ProjectHoverPopup } from "@/components/ui/project-hover-popup";
-import { Eye } from "lucide-react";
+import { Github, ExternalLink } from "lucide-react";
 
 export function ProjectsCarousel() {
-    const [index, setIndex] = useState(0);
-    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-    const [isHovering, setIsHovering] = useState(false);
-
-    const next = () => setIndex((prev) => (prev + 1) % projects.length);
-    const prev = () => setIndex((prev) => (prev - 1 + projects.length) % projects.length);
-
-    const handleOpenPreview = () => {
-        setIsPreviewOpen(true);
-        setIsHovering(false);
-    };
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     return (
-        <section id="projects" className="py-20 h-screen flex flex-col items-center justify-center relative overflow-hidden">
-            <h2 className="text-4xl md:text-6xl font-bold font-heading mb-12 z-10 mix-blend-difference text-white">
-                System <span className="text-primary">Creations</span>
-            </h2>
+        <section id="projects" className="py-20 md:py-32 bg-background relative overflow-hidden">
+            <div className="container mx-auto px-4 md:px-6 max-w-7xl">
+                <div className="text-center mb-16">
+                    <h2 className="text-4xl md:text-6xl font-bold font-heading mb-4">
+                        Featured <span className="text-primary">Projects</span>
+                    </h2>
+                    <p className="text-muted-foreground text-lg">
+                        Building solutions that make a difference
+                    </p>
+                </div>
 
-            <div className="relative w-full max-w-4xl h-[400px] flex items-center justify-center perspective-1000">
-                <AnimatePresence mode="popLayout" initial={false} custom={index}>
-                    <motion.div
-                        key={index}
-                        initial={{ opacity: 0, rotateY: 90, x: 200 }}
-                        animate={{ opacity: 1, rotateY: 0, x: 0 }}
-                        exit={{ opacity: 0, rotateY: -90, x: -200 }}
-                        transition={{ duration: 0.6, type: "spring" }}
-                        className="absolute w-[80%] md:w-[60%] aspect-video bg-card border border-primary/30 rounded-xl overflow-hidden shadow-[0_0_50px_rgba(124,58,237,0.2)] cursor-pointer group"
-                        onClick={handleOpenPreview}
-                        onMouseEnter={() => setIsHovering(true)}
-                        onMouseLeave={() => setIsHovering(false)}
-                        whileHover={{ scale: 1.05, rotateX: 5 }}
-                    >
-                        <div className="relative w-full h-full">
-                            {/* Image */}
-                            <div className="absolute inset-0 bg-secondary" />
-                            <Image
-                                src={projects[index].image || "/project_placeholder.png"}
-                                alt={projects[index].title}
-                                fill
-                                className="object-cover opacity-60 group-hover:opacity-40 transition-opacity"
-                            />
-
-                            {/* Content Overlay */}
-                            <div className="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-t from-black via-black/50 to-transparent">
-                                <div className="flex justify-between items-end mb-2">
-                                    <h3 className="text-3xl font-bold text-white max-w-[80%]">{projects[index].title}</h3>
-                                    <motion.div
-                                        initial={{ opacity: 0, scale: 0 }}
-                                        whileHover={{ scale: 1.2 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        className="bg-primary p-2 rounded-full text-black"
-                                    >
-                                        <Eye className="w-5 h-5" />
-                                    </motion.div>
+                {/* 3 Projects Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {projects.slice(0, 6).map((project, idx) => (
+                        <motion.div
+                            key={idx}
+                            className="relative group"
+                            onHoverStart={() => setHoveredIndex(idx)}
+                            onHoverEnd={() => setHoveredIndex(null)}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: idx * 0.1 }}
+                        >
+                            <motion.div
+                                className={`relative bg-card border-2 border-border rounded-2xl overflow-hidden transition-all duration-300 ${hoveredIndex === idx ? "z-10 shadow-2xl shadow-primary/20" : ""
+                                    }`}
+                                animate={{
+                                    scale: hoveredIndex === idx ? 1.05 : 1,
+                                    y: hoveredIndex === idx ? -10 : 0
+                                }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                {/* Project Preview Image/Gradient */}
+                                <div className="h-48 bg-gradient-to-br from-primary/20 via-primary/10 to-transparent relative overflow-hidden">
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <div className="text-6xl font-bold text-white/10">
+                                            {String(idx + 1).padStart(2, '0')}
+                                        </div>
+                                    </div>
+                                    {/* Hover overlay with preview hint */}
+                                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <div className="text-center">
+                                            <ExternalLink className="w-12 h-12 text-white mb-2 mx-auto" />
+                                            <p className="text-white font-semibold">Click to view live</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <p className="text-gray-300 mb-4 line-clamp-2">{projects[index].description}</p>
-                                <div className="flex flex-wrap gap-2">
-                                    {projects[index].tech.map(t => (
-                                        <span key={t} className="px-2 py-1 text-xs border border-primary text-primary rounded bg-primary/10">
-                                            {t}
-                                        </span>
-                                    ))}
+
+                                {/* Project Info */}
+                                <div className="p-6">
+                                    <h3 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">
+                                        {project.title}
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                                        {project.description}
+                                    </p>
+
+                                    {/* Tech Stack */}
+                                    <div className="flex flex-wrap gap-2 mb-4">
+                                        {project.tech.slice(0, 3).map((tech) => (
+                                            <span
+                                                key={tech}
+                                                className="text-xs px-2 py-1 bg-primary/10 text-primary rounded-md font-medium"
+                                            >
+                                                {tech}
+                                            </span>
+                                        ))}
+                                        {project.tech.length > 3 && (
+                                            <span className="text-xs px-2 py-1 text-muted-foreground">
+                                                +{project.tech.length - 3}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* Action Buttons */}
+                                    <div className="flex gap-3">
+                                        <a
+                                            href={project.links.demo}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex-1 py-2 px-4 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all font-semibold text-center flex items-center justify-center gap-2"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <ExternalLink size={16} />
+                                            Live Demo
+                                        </a>
+                                        {project.links.code !== "#" && (
+                                            <a
+                                                href={project.links.code}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="py-2 px-4 bg-secondary border border-border rounded-lg hover:bg-secondary/80 transition-all font-semibold flex items-center justify-center gap-2"
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                <Github size={16} />
+                                                Code
+                                            </a>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
+                            </motion.div>
+                        </motion.div>
+                    ))}
+                </div>
 
-                            {/* Hover Instruction */}
-                            <div className="absolute top-4 right-4 bg-black/60 backdrop-blur px-3 py-1 rounded text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest border border-white/10">
-                                Click to Preview
-                            </div>
-
-                            {/* Hover Popup */}
-                            <ProjectHoverPopup
-                                isVisible={isHovering}
-                                title={projects[index].title}
-                                tech={projects[index].tech}
-                            />
-                        </div>
-                    </motion.div>
-                </AnimatePresence>
-
-                {/* Controls */}
-                <button onClick={(e) => { e.stopPropagation(); prev(); }} className="absolute left-4 p-4 bg-black/50 backdrop-blur rounded-full border border-white/10 hover:bg-primary/20 transition-all z-20">
-                    <ChevronLeft className="w-6 h-6" />
-                </button>
-                <button onClick={(e) => { e.stopPropagation(); next(); }} className="absolute right-4 p-4 bg-black/50 backdrop-blur rounded-full border border-white/10 hover:bg-primary/20 transition-all z-20">
-                    <ChevronRight className="w-6 h-6" />
-                </button>
+                {/* View All Projects Link */}
+                {projects.length > 6 && (
+                    <div className="text-center mt-12">
+                        <a
+                            href="#projects"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-primary/10 border border-primary rounded-lg hover:bg-primary hover:text-primary-foreground transition-all font-semibold"
+                        >
+                            View All {projects.length} Projects
+                        </a>
+                    </div>
+                )}
             </div>
-
-            <ProjectPreview
-                url={projects[index].links.demo || "#"}
-                title={projects[index].title}
-                tech={projects[index].tech}
-                isOpen={isPreviewOpen}
-                onClose={() => setIsPreviewOpen(false)}
-                onNext={next}
-                onPrevious={prev}
-                currentIndex={index}
-                totalProjects={projects.length}
-            />
         </section>
     );
 }
