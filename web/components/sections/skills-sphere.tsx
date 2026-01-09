@@ -38,14 +38,14 @@ function SkillSphere({ skill, position }: { skill: typeof skills[0], position: [
                 <Html
                     position={[0, 0, 0]}
                     center
-                    distanceFactor={5}
+                    distanceFactor={4}
                     style={{
                         pointerEvents: 'none',
                         userSelect: 'none',
                     }}
                 >
-                    <div className="bg-black/95 backdrop-blur-md px-5 py-3 rounded-xl border-2 border-primary/70 whitespace-nowrap shadow-2xl">
-                        <span className="text-xl font-bold text-white">
+                    <div className="bg-black/95 backdrop-blur-md px-6 py-4 rounded-2xl border-3 border-primary/80 whitespace-nowrap shadow-2xl">
+                        <span className="text-2xl font-extrabold text-white tracking-wide">
                             {skill.name}
                         </span>
                     </div>
