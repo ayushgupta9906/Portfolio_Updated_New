@@ -57,7 +57,8 @@ function SkillsSphereCloud({ onPositionUpdate }: {
 }) {
     const positions = useMemo(() => {
         const temp: Array<[number, number, number]> = [];
-        const radius = 12;
+        const radius = 18; // Increased for more spacing
+
 
         skills.forEach((_, i) => {
             const phi = Math.acos(-1 + (2 * i) / skills.length);
