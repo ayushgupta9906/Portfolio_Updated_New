@@ -1,99 +1,104 @@
 "use client";
 
-import { useRef, useMemo, useState, useEffect } from "react";
+import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { useTheme } from "next-themes";
 
-function StarField() {
-    const mesh = useRef<THREE.Points>(null!);
-    const count = 4000;
+function AuraMesh() {
+    const meshRef = useRef<THREE.Mesh>(null!);
 
-    const [positions, colors] = useMemo(() => {
-        const positions = new Float32Array(count * 3);
-        const colors = new Float32Array(count * 3);
-        const color = new THREE.Color();
-
-        for (let i = 0; i < count; i++) {
-            // Tunnel distribution
-            const r = Math.random() * 5 + 2; // Radius
-            const theta = Math.random() * 2 * Math.PI;
-            const z = (Math.random() - 0.5) * 100;
-
-            positions[i * 3] = r * Math.cos(theta);
-            positions[i * 3 + 1] = r * Math.sin(theta);
-            positions[i * 3 + 2] = z; // spread along Z
-
-            // Cyberpunk colors
-            // Mix of Cyan, Magenta, Violet
-            const mix = Math.random();
-            if (mix > 0.6) color.setHex(0x8b5cf6); // Violet
-            else if (mix > 0.3) color.setHex(0xec4899); // Pink
-            else color.setHex(0x06b6d4); // Cyan
-
-            colors[i * 3] = color.r;
-            colors[i * 3 + 1] = color.g;
-            colors[i * 3 + 2] = color.b;
-        }
-        return [positions, colors];
-    }, []);
-
-    useFrame((state, delta) => {
-        // Move stars towards camera to create warp effect
-        if (!mesh.current) return;
-
-        const positions = mesh.current.geometry.attributes.position.array as Float32Array;
-
-        // Speed factor (Boost or Normal)
-        const currentSpeed = isBoosting ? 100 * delta : 10 * delta;
+    // Create a larger plane for the mesh
+    const [positions, initialY] = useMemo(() => {
+        const count = 50; // Grid size
+        const pos = new Float32Array(count * count * 3);
+        const iy = new Float32Array(count * count);
 
         for (let i = 0; i < count; i++) {
-            let zIndex = i * 3 + 2;
-            positions[zIndex] += currentSpeed;
+            for (let j = 0; j < count; j++) {
+                const idx = (i * count + j);
+                const x = (i - count / 2) * 1.5;
+                const z = (j - count / 2) * 1.5;
+                const y = Math.random() * 2;
 
-            // Reset if too close
-            if (positions[zIndex] > 20) {
-                positions[zIndex] = -80;
+                pos[idx * 3] = x;
+                pos[idx * 3 + 1] = y;
+                pos[idx * 3 + 2] = z;
+                iy[idx] = y;
             }
         }
-        mesh.current.geometry.attributes.position.needsUpdate = true;
-        mesh.current.rotation.z += delta * 0.1; // Slight spin
+        return [pos, iy];
+    }, []);
+
+    useFrame((state) => {
+        const time = state.clock.getElapsedTime();
+        const pos = meshRef.current.geometry.attributes.position.array as Float32Array;
+
+        for (let i = 0; i < 50; i++) {
+            for (let j = 0; j < 50; j++) {
+                const idx = (i * 50 + j);
+                const x = pos[idx * 3];
+                const z = pos[idx * 3 + 2];
+
+                // Fluid wave motion
+                pos[idx * 3 + 1] = initialY[idx] +
+                    Math.sin(x * 0.2 + time) * 2 +
+                    Math.cos(z * 0.2 + time) * 2;
+            }
+        }
+        meshRef.current.geometry.attributes.position.needsUpdate = true;
+        meshRef.current.rotation.y = time * 0.05;
     });
 
-    const [isBoosting, setIsBoosting] = useState(false);
+    return (
+        <mesh ref={meshRef} rotation={[-Math.PI / 2.5, 0, 0]}>
+            <planeGeometry args={[75, 75, 49, 49]} />
+            <meshStandardMaterial
+                color="#7c3aed"
+                wireframe
+                transparent
+                opacity={0.3}
+                emissive="#7c3aed"
+                emissiveIntensity={0.5}
+            />
+        </mesh>
+    );
+}
 
-    useEffect(() => {
-        const handleMouseDown = () => setIsBoosting(true);
-        const handleMouseUp = () => setIsBoosting(false);
+function Particles() {
+    const count = 1000;
+    const mesh = useRef<THREE.Points>(null!);
 
-        window.addEventListener("mousedown", handleMouseDown);
-        window.addEventListener("mouseup", handleMouseUp);
-        return () => {
-            window.removeEventListener("mousedown", handleMouseDown);
-            window.removeEventListener("mouseup", handleMouseUp);
+    const [positions] = useMemo(() => {
+        const pos = new Float32Array(count * 3);
+        for (let i = 0; i < count; i++) {
+            pos[i * 3] = (Math.random() - 0.5) * 100;
+            pos[i * 3 + 1] = (Math.random() - 0.5) * 100;
+            pos[i * 3 + 2] = (Math.random() - 0.5) * 100;
         }
+        return [pos];
     }, []);
+
+    useFrame((state) => {
+        mesh.current.rotation.y = state.clock.getElapsedTime() * 0.05;
+        mesh.current.rotation.x = state.clock.getElapsedTime() * 0.03;
+    });
 
     return (
         <points ref={mesh}>
             <bufferGeometry>
                 <bufferAttribute
                     attach="attributes-position"
-                    args={[positions, 3]}
-                />
-                <bufferAttribute
-                    attach="attributes-color"
-                    args={[colors, 3]}
+                    count={count}
+                    array={positions}
+                    itemSize={3}
                 />
             </bufferGeometry>
             <pointsMaterial
-                size={0.15}
-                vertexColors
+                size={0.1}
+                color="#06b6d4"
                 transparent
-                opacity={0.8}
+                opacity={0.4}
                 sizeAttenuation
-                depthWrite={false}
-                blending={THREE.AdditiveBlending}
             />
         </points>
     );
@@ -102,11 +107,19 @@ function StarField() {
 export function WarpBackground() {
     return (
         <div className="fixed inset-0 z-[-1] bg-black">
-            <Canvas camera={{ position: [0, 0, 5], fov: 60 }} gl={{ antialias: false }}>
-                <color attach="background" args={['#050505']} />
-                <fog attach="fog" args={['#050505', 5, 40]} />
-                <StarField />
+            <Canvas camera={{ position: [0, 10, 30], fov: 60 }}>
+                <color attach="background" args={['#020202']} />
+                <fog attach="fog" args={['#020202', 20, 50]} />
+                <ambientLight intensity={0.5} />
+                <pointLight position={[10, 10, 10]} intensity={1} color="#7c3aed" />
+                <pointLight position={[-10, 10, -10]} intensity={1} color="#06b6d4" />
+
+                <AuraMesh />
+                <Particles />
             </Canvas>
+
+            {/* Vignette Overlay */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)] pointer-events-none" />
         </div>
     );
 }
