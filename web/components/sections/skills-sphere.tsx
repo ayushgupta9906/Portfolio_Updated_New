@@ -2,50 +2,86 @@
 
 import { useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Float } from "@react-three/drei";
+import { OrbitControls, Float, Sprite } from "@react-three/drei";
 import * as THREE from "three";
 import { skills } from "@/lib/data";
-import { motion } from "framer-motion";
 
-function SkillSphere({ skill, position, onHover }: { skill: typeof skills[0], position: [number, number, number], onHover: (name: string | null) => void }) {
+// Create a canvas texture with text
+function createTextTexture(text: string) {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d')!;
+    canvas.width = 512;
+    canvas.height = 256;
+
+    // Background
+    context.fillStyle = 'rgba(0, 0, 0, 0.9)';
+    context.roundRect(10, 10, canvas.width - 20, canvas.height - 20, 20);
+    context.fill();
+
+    // Border
+    context.strokeStyle = '#7c3aed';
+    context.lineWidth = 8;
+    context.roundRect(10, 10, canvas.width - 20, canvas.height - 20, 20);
+    context.stroke();
+
+    // Text
+    context.fillStyle = 'white';
+    context.font = 'bold 60px Arial';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(text, canvas.width / 2, canvas.height / 2);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+    return texture;
+}
+
+function SkillSphere({ skill, position }: { skill: typeof skills[0], position: [number, number, number] }) {
     const meshRef = useRef<THREE.Mesh>(null);
+    const spriteRef = useRef<THREE.Sprite>(null);
     const [hovered, setHovered] = useState(false);
 
-    useFrame((state) => {
+    const texture = useMemo(() => createTextTexture(skill.name), [skill.name]);
+
+    useFrame((state, delta) => {
         if (meshRef.current) {
             meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.2;
-            meshRef.current.rotation.y += 0.01;
+            meshRef.current.rotation.y += delta * 0.5;
+        }
+        // Make sprite always face camera
+        if (spriteRef.current && state.camera) {
+            spriteRef.current.quaternion.copy(state.camera.quaternion);
         }
     });
 
     return (
         <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-            <mesh
-                ref={meshRef}
-                position={position}
-                onPointerEnter={() => {
-                    setHovered(true);
-                    onHover(skill.name);
-                }}
-                onPointerLeave={() => {
-                    setHovered(false);
-                    onHover(null);
-                }}
-            >
-                <sphereGeometry args={[1.8, 24, 24]} />
-                <meshStandardMaterial
-                    color={hovered ? "#a78bfa" : "#7c3aed"}
-                    emissive="#7c3aed"
-                    emissiveIntensity={hovered ? 0.8 : 0.3}
-                    roughness={0.3}
-                    metalness={0.8}
-                />
-            </mesh>
+            <group position={position}>
+                <mesh
+                    ref={meshRef}
+                    onPointerEnter={() => setHovered(true)}
+                    onPointerLeave={() => setHovered(false)}
+                >
+                    <sphereGeometry args={[1.8, 24, 24]} />
+                    <meshStandardMaterial
+                        color={hovered ? "#a78bfa" : "#7c3aed"}
+                        emissive="#7c3aed"
+                        emissiveIntensity={hovered ? 0.8 : 0.3}
+                        roughness={0.3}
+                        metalness={0.8}
+                    />
+                </mesh>
+
+                {/* Text sprite that always faces camera */}
+                <sprite ref={spriteRef} scale={[8, 4, 1]}>
+                    <spriteMaterial map={texture} transparent opacity={0.95} />
+                </sprite>
+            </group>
         </Float>
     );
 }
 
-function SkillsSphereCloud({ onHover }: { onHover: (name: string | null) => void }) {
+function SkillsSphereCloud() {
     const positions = useMemo(() => {
         const temp: Array<[number, number, number]> = [];
         const radius = 8;
@@ -67,36 +103,25 @@ function SkillsSphereCloud({ onHover }: { onHover: (name: string | null) => void
     return (
         <>
             {skills.map((skill, i) => (
-                <SkillSphere key={skill.name} skill={skill} position={positions[i]} onHover={onHover} />
+                <SkillSphere key={skill.name} skill={skill} position={positions[i]} />
             ))}
         </>
     );
 }
 
 export function SkillsSphere() {
-    const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
-
     return (
-        <section id="skills" className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-background to-neutral-900 relative overflow-hidden py-20">
+        <section id="skills" className="h-screen flex flex-col items-center justify-center bg-gradient-to-b from-background to-neutral-900 relative overflow-hidden">
             <div className="absolute top-20 z-10 text-center">
                 <h2 className="text-4xl md:text-6xl font-bold font-heading mb-4">
                     Tech <span className="text-primary">Universe</span>
                 </h2>
-                <p className="text-muted-foreground text-lg mb-2">
-                    Drag to explore • Hover to highlight • {skills.length} technologies
+                <p className="text-muted-foreground text-lg">
+                    Drag to explore • {skills.length} technologies
                 </p>
-                {hoveredSkill && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mt-4 px-6 py-3 bg-primary/90 text-primary-foreground rounded-full inline-block font-bold text-xl shadow-xl"
-                    >
-                        {hoveredSkill}
-                    </motion.div>
-                )}
             </div>
 
-            <div className="w-full h-[600px]">
+            <div className="w-full h-full">
                 <Canvas camera={{ position: [0, 0, 32], fov: 75 }}>
                     <color attach="background" args={['#000000']} />
                     <ambientLight intensity={0.5} />
@@ -104,7 +129,7 @@ export function SkillsSphere() {
                     <pointLight position={[-10, -10, -10]} intensity={0.5} />
                     <pointLight position={[0, 10, 0]} intensity={0.5} color="#7c3aed" />
 
-                    <SkillsSphereCloud onHover={setHoveredSkill} />
+                    <SkillsSphereCloud />
 
                     <OrbitControls
                         enableZoom={false}
@@ -120,23 +145,6 @@ export function SkillsSphere() {
                         <meshBasicMaterial color="#000000" side={THREE.BackSide} />
                     </mesh>
                 </Canvas>
-            </div>
-
-            {/* All Skills Grid - Visible and Clear */}
-            <div className="mt-12 max-w-6xl px-4">
-                <h3 className="text-2xl font-bold text-center mb-6">All Technologies</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                    {skills.map((skill) => (
-                        <motion.div
-                            key={skill.name}
-                            whileHover={{ scale: 1.05 }}
-                            className="px-4 py-3 bg-card border-2 border-border rounded-lg text-center hover:border-primary hover:bg-primary/5 transition-all cursor-pointer"
-                        >
-                            <div className="text-lg font-bold">{skill.name}</div>
-                            <div className="text-xs text-muted-foreground mt-1">{skill.category}</div>
-                        </motion.div>
-                    ))}
-                </div>
             </div>
         </section>
     );
