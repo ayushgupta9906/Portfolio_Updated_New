@@ -10,8 +10,8 @@ import { skills } from "@/lib/data";
 function createTextTexture(text: string) {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d')!;
-    canvas.width = 512;
-    canvas.height = 256;
+    canvas.width = 256;
+    canvas.height = 128;
 
     // Background
     context.fillStyle = 'rgba(0, 0, 0, 0.9)';
@@ -26,7 +26,7 @@ function createTextTexture(text: string) {
 
     // Text
     context.fillStyle = 'white';
-    context.font = 'bold 60px Arial';
+    context.font = 'bold 40px Arial';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.fillText(text, canvas.width / 2, canvas.height / 2);
@@ -62,7 +62,7 @@ function SkillSphere({ skill, position }: { skill: typeof skills[0], position: [
                     onPointerEnter={() => setHovered(true)}
                     onPointerLeave={() => setHovered(false)}
                 >
-                    <sphereGeometry args={[1.8, 24, 24]} />
+                    <sphereGeometry args={[2.5, 32, 32]} />
                     <meshStandardMaterial
                         color={hovered ? "#a78bfa" : "#7c3aed"}
                         emissive="#7c3aed"
@@ -73,7 +73,7 @@ function SkillSphere({ skill, position }: { skill: typeof skills[0], position: [
                 </mesh>
 
                 {/* Text sprite that always faces camera */}
-                <sprite ref={spriteRef} scale={[8, 4, 1]}>
+                <sprite ref={spriteRef} scale={[4, 2, 1]}>
                     <spriteMaterial map={texture} transparent opacity={0.95} />
                 </sprite>
             </group>
@@ -84,7 +84,7 @@ function SkillSphere({ skill, position }: { skill: typeof skills[0], position: [
 function SkillsSphereCloud() {
     const positions = useMemo(() => {
         const temp: Array<[number, number, number]> = [];
-        const radius = 8;
+        const radius = 12;
 
         skills.forEach((_, i) => {
             const phi = Math.acos(-1 + (2 * i) / skills.length);
