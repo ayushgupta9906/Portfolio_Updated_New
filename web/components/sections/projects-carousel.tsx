@@ -36,15 +36,23 @@ export function ProjectsCarousel() {
                             viewport={{ once: true }}
                             transition={{ delay: (idx % 3) * 0.1 }}
                             onClick={() => window.open(project.links.demo, "_blank")}
+                            animate={{
+                                opacity: hoveredIndex !== null && hoveredIndex !== idx ? 0.4 : 1,
+                                filter: hoveredIndex !== null && hoveredIndex !== idx ? "blur(2px)" : "blur(0px)",
+                            }}
                         >
                             <motion.div
-                                className={`relative bg-card border border-border rounded-3xl overflow-hidden transition-all duration-500 h-full flex flex-col ${hoveredIndex === idx ? "z-10 shadow-[0_0_40px_rgba(124,58,237,0.2)] border-primary/50" : "hover:border-primary/30"
+                                className={`relative bg-card border border-border rounded-3xl overflow-hidden h-full flex flex-col transition-colors duration-500 ${hoveredIndex === idx ? "z-50 shadow-[0_0_80px_rgba(124,58,237,0.3)] border-primary" : "hover:border-primary/30"
                                     }`}
                                 animate={{
-                                    scale: hoveredIndex === idx ? 1.02 : 1,
-                                    y: hoveredIndex === idx ? -8 : 0
+                                    scale: hoveredIndex === idx ? 1.08 : 1,
+                                    y: hoveredIndex === idx ? -10 : 0
                                 }}
-                                transition={{ duration: 0.4, ease: "easeOut" }}
+                                transition={{
+                                    type: "spring",
+                                    stiffness: 260,
+                                    damping: 20
+                                }}
                             >
                                 {/* Project Preview Image */}
                                 <div className="h-56 bg-neutral-900 relative overflow-hidden">
