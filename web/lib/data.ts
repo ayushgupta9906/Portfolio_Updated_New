@@ -13,8 +13,13 @@ export const siteConfig = {
     },
     {
       name: "LinkedIn",
-      url: "https://linkedin.com/in/ayushgupta9906",
+      url: "https://www.linkedin.com/in/ayush-gupta-3a93621b6/",
       icon: Linkedin,
+    },
+    {
+      name: "Twitter",
+      url: "https://twitter.com/LaSerX_1729",
+      icon: Twitter,
     },
     {
       name: "Email",
@@ -167,7 +172,7 @@ export const aboutContent = {
     "Passionate about clean code, system design, and pushing technological boundaries."
   ],
   location: "Noida, India",
-  resumeUrl: "/Ayush_Gupta_Resume.pdf",
+  resumeUrl: "/resume.pdf",
 };
 
 // Real projects from resume and portfolio
@@ -181,18 +186,18 @@ export const projects = [
       code: "https://github.com/ayushgupta9906/BosDB"
     },
     image: "/projects/bosdb.png",
-    status: "In Development"
+    status: "Live Beta"
   },
   {
     title: "Oxon AI – Intelligent IDE",
     description: "An AI-native IDE designed for seamless autonomous coding and building. Features integrated agentic capabilities and context-aware code generation. Currently in active development.",
     tech: ["Next.js", "Python", "LLMs", "Web Container", "Tailwind CSS"],
     links: {
-      demo: "#",
-      code: "#"
+      demo: "https://oxonai.tech",
+      code: "https://github.com/ayushgupta9906/OxonAI"
     },
     image: "/projects/oxon_ai.jpg",
-    status: "In Development"
+    status: "Live Beta"
   },
   {
     title: "Lenskart Optimetry Centre",
