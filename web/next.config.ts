@@ -1,12 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+
+
   images: {
     remotePatterns: [
       {
@@ -15,11 +11,7 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
-    turbopack: {
-      root: '..',
-    },
-  },
+
 };
 
 export default nextConfig;
