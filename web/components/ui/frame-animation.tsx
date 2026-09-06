@@ -82,18 +82,28 @@ export function FrameAnimation({
         };
     }, [frames]);
 
-    // Handle manual frame updates (e.g. from scroll)
+    // Handle manual frame updates (supports both number and MotionValue<number>)
     useEffect(() => {
         if (currentFrame === undefined || isLoading || !imagesRef.current.length) return;
 
-        const canvas = canvasRef.current;
-        const ctx = canvas?.getContext("2d");
-        // Ensure frame index is within bounds
-        const safeFrameIndex = Math.max(0, Math.min(currentFrame, frames.length - 1));
-        const image = imagesRef.current[safeFrameIndex];
+        const drawFrame = (frameVal: number) => {
+            const canvas = canvasRef.current;
+            const ctx = canvas?.getContext("2d");
+            const safeFrameIndex = Math.max(0, Math.min(Math.round(frameVal), frames.length - 1));
+            const image = imagesRef.current[safeFrameIndex];
 
-        if (canvas && ctx && image) {
-            ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+            if (canvas && ctx && image) {
+                ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+            }
+        };
+
+        if (typeof currentFrame === "number") {
+            drawFrame(currentFrame);
+        } else if (currentFrame && typeof (currentFrame as any).get === "function") {
+            drawFrame((currentFrame as MotionValue<number>).get());
+            return (currentFrame as MotionValue<number>).on("change", (latest: number) => {
+                drawFrame(latest);
+            });
         }
     }, [currentFrame, isLoading, frames.length]);
 
