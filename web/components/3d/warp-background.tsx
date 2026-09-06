@@ -6,18 +6,17 @@ import * as THREE from "three";
 
 function AuraMesh() {
     const meshRef = useRef<THREE.Mesh>(null!);
+    const count = 28; // Optimized grid size: 784 vertices instead of 2,500
 
-    // Create a larger plane for the mesh
     const [positions, initialY] = useMemo(() => {
-        const count = 50; // Grid size
         const pos = new Float32Array(count * count * 3);
         const iy = new Float32Array(count * count);
 
         for (let i = 0; i < count; i++) {
             for (let j = 0; j < count; j++) {
-                const idx = (i * count + j);
-                const x = (i - count / 2) * 1.5;
-                const z = (j - count / 2) * 1.5;
+                const idx = i * count + j;
+                const x = (i - count / 2) * 2.5;
+                const z = (j - count / 2) * 2.5;
                 const y = Math.random() * 2;
 
                 pos[idx * 3] = x;
@@ -31,27 +30,27 @@ function AuraMesh() {
 
     useFrame((state) => {
         const time = state.clock.getElapsedTime();
+        if (!meshRef.current) return;
         const pos = meshRef.current.geometry.attributes.position.array as Float32Array;
 
-        for (let i = 0; i < 50; i++) {
-            for (let j = 0; j < 50; j++) {
-                const idx = (i * 50 + j);
+        for (let i = 0; i < count; i++) {
+            for (let j = 0; j < count; j++) {
+                const idx = i * count + j;
                 const x = pos[idx * 3];
                 const z = pos[idx * 3 + 2];
 
-                // Fluid wave motion
                 pos[idx * 3 + 1] = initialY[idx] +
-                    Math.sin(x * 0.2 + time) * 2 +
-                    Math.cos(z * 0.2 + time) * 2;
+                    Math.sin(x * 0.15 + time) * 2 +
+                    Math.cos(z * 0.15 + time) * 2;
             }
         }
         meshRef.current.geometry.attributes.position.needsUpdate = true;
-        meshRef.current.rotation.y = time * 0.05;
+        meshRef.current.rotation.y = time * 0.03;
     });
 
     return (
         <mesh ref={meshRef} rotation={[-Math.PI / 2.5, 0, 0]}>
-            <planeGeometry args={[75, 75, 49, 49]} />
+            <planeGeometry args={[75, 75, count - 1, count - 1]} />
             <meshStandardMaterial
                 color="#7c3aed"
                 wireframe
@@ -65,7 +64,7 @@ function AuraMesh() {
 }
 
 function Particles() {
-    const count = 1000;
+    const count = 600;
     const mesh = useRef<THREE.Points>(null!);
 
     const [positions] = useMemo(() => {
@@ -79,8 +78,9 @@ function Particles() {
     }, []);
 
     useFrame((state) => {
-        mesh.current.rotation.y = state.clock.getElapsedTime() * 0.05;
-        mesh.current.rotation.x = state.clock.getElapsedTime() * 0.03;
+        if (!mesh.current) return;
+        mesh.current.rotation.y = state.clock.getElapsedTime() * 0.03;
+        mesh.current.rotation.x = state.clock.getElapsedTime() * 0.02;
     });
 
     return (
@@ -92,7 +92,7 @@ function Particles() {
                 />
             </bufferGeometry>
             <pointsMaterial
-                size={0.1}
+                size={0.12}
                 color="#06b6d4"
                 transparent
                 opacity={0.4}
@@ -110,26 +110,21 @@ function InteractiveScene() {
     const lastMousePos = useRef({ x: 0, y: 0 });
 
     useFrame(() => {
-        // Smooth interpolation (lerp)
         currentRotation.current.x += (targetRotation.current.x - currentRotation.current.x) * 0.05;
         currentRotation.current.y += (targetRotation.current.y - currentRotation.current.y) * 0.05;
 
         if (groupRef.current) {
             groupRef.current.rotation.x = currentRotation.current.x;
             groupRef.current.rotation.y = currentRotation.current.y;
-
-            // Add subtle parallax based on rotation
-            groupRef.current.position.x = currentRotation.current.y * 5;
-            groupRef.current.position.y = -currentRotation.current.x * 5;
+            groupRef.current.position.x = currentRotation.current.y * 4;
+            groupRef.current.position.y = -currentRotation.current.x * 4;
         }
     });
 
     useEffect(() => {
         const handleMouseDown = (e: MouseEvent) => {
-            // Only drag if left clicking on non-interactive elements
             const target = e.target as HTMLElement;
             if (target.closest('button, a, input, [role="button"]')) return;
-
             isDragging.current = true;
             lastMousePos.current = { x: e.clientX, y: e.clientY };
         };
@@ -140,7 +135,6 @@ function InteractiveScene() {
 
         const handleMouseMove = (e: MouseEvent) => {
             if (!isDragging.current) {
-                // Subtle mouse follow when not dragging
                 const x = (e.clientX / window.innerWidth - 0.5) * 0.2;
                 const y = (e.clientY / window.innerHeight - 0.5) * 0.2;
                 targetRotation.current.y = x;
@@ -150,10 +144,8 @@ function InteractiveScene() {
 
             const deltaX = e.clientX - lastMousePos.current.x;
             const deltaY = e.clientY - lastMousePos.current.y;
-
             targetRotation.current.y += deltaX * 0.002;
             targetRotation.current.x += deltaY * 0.002;
-
             lastMousePos.current = { x: e.clientX, y: e.clientY };
         };
 
@@ -178,8 +170,8 @@ function InteractiveScene() {
 
 export function WarpBackground() {
     return (
-        <div className="fixed inset-0 z-[-1] bg-black cursor-grab active:cursor-grabbing">
-            <Canvas camera={{ position: [0, 10, 30], fov: 60 }} dpr={[1, 2]}>
+        <div className="fixed inset-0 z-[-1] bg-black pointer-events-none">
+            <Canvas camera={{ position: [0, 10, 30], fov: 60 }} dpr={[1, 1.5]}>
                 <color attach="background" args={['#020202']} />
                 <fog attach="fog" args={['#020202', 20, 50]} />
                 <ambientLight intensity={0.5} />

@@ -17,28 +17,23 @@ export function HeroHUD({ frames }: HeroHUDProps) {
         offset: ["start start", "end end"],
     });
 
-    const frameIndex = useTransform(scrollYProgress, [0, 1], [0, frames.length - 1]);
+    // Accelerated frame playback: plays full animation briskly across initial scroll travel
+    const frameIndex = useTransform(scrollYProgress, [0, 0.55], [0, frames.length - 1], { clamp: true });
+    const heroOpacity = useTransform(scrollYProgress, [0, 0.45], [1, 0]);
+    const heroScale = useTransform(scrollYProgress, [0, 0.45], [1, 0.95]);
 
     // Convert float index to integer for rendering
-    const [currentFrame, setCurrentFrame] = useState(0);
-
-    useEffect(() => {
-        return frameIndex.on("change", (latest) => {
-            setCurrentFrame(Math.round(latest));
-        });
-    }, [frameIndex]);
-
     return (
         <section
             ref={containerRef}
-            className="relative h-[250vh] w-full"
+            className="relative h-[160vh] w-full"
         >
             <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden">
                 {/* Background Animation - Scroll Controlled */}
                 <div className="absolute inset-0 z-0 opacity-40">
                     <FrameAnimation
                         frames={frames}
-                        currentFrame={currentFrame}
+                        currentFrame={frameIndex}
                         autoPlay={false}
                         loop={false}
                     />
@@ -47,8 +42,11 @@ export function HeroHUD({ frames }: HeroHUDProps) {
                 {/* HUD Scanline Effect */}
                 <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%] z-50 opacity-20" />
 
-                {/* Content Group */}
-                <div className="flex flex-col items-center gap-6 relative z-20 pointer-events-auto">
+                {/* Content Group with smooth fade on scroll */}
+                <motion.div 
+                    style={{ opacity: heroOpacity, scale: heroScale }}
+                    className="flex flex-col items-center gap-6 relative z-20 pointer-events-auto"
+                >
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -59,7 +57,7 @@ export function HeroHUD({ frames }: HeroHUDProps) {
                             System Initialization // Active
                         </span>
 
-                        <h1 className="text-7xl md:text-9xl font-bold font-heading tracking-tight leading-none text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                        <h1 className="text-7xl md:text-9xl font-bold font-heading tracking-tight leading-none text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.25)]">
                             {siteConfig.name.split(' ').map((word, i) => (
                                 <span key={word} className={i === 1 ? "text-primary" : ""}>
                                     {word.toUpperCase()}{i === 0 ? " " : ""}
@@ -89,14 +87,14 @@ export function HeroHUD({ frames }: HeroHUDProps) {
                             <div className="w-8 h-px bg-muted-foreground/30" />
                         </div>
                     </motion.div>
-                </div>
+                </motion.div>
 
-                {/* Corner Brackets with Data Strings */}
-                <div className="fixed top-12 left-12 p-2 hidden lg:block">
+                {/* Corner Brackets with Data Strings - Absolute inside Hero so they don't persist on other sections */}
+                <div className="absolute top-12 left-12 p-2 hidden lg:block pointer-events-none">
                     <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-primary/40" />
                 </div>
 
-                <div className="fixed top-12 right-12 p-2 hidden lg:block text-right">
+                <div className="absolute top-12 right-12 p-2 hidden lg:block text-right pointer-events-none">
                     <div className="text-[10px] font-mono text-primary/40 flex flex-col gap-1">
                         <span>{`SESSION_EXP: 04:32:00`}</span>
                         <span>{`AUTH_LVL: LVL_7`}</span>
@@ -104,8 +102,9 @@ export function HeroHUD({ frames }: HeroHUDProps) {
                     <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-primary/40" />
                 </div>
 
-                <div className="fixed bottom-32 left-1/2 -translate-x-1/2 animate-bounce">
-                    <div className="w-px h-12 bg-gradient-to-b from-primary/80 to-transparent" />
+                <div className="absolute bottom-16 left-1/2 -translate-x-1/2 animate-bounce pointer-events-none flex flex-col items-center gap-2">
+                    <span className="text-[10px] font-mono text-primary/60 tracking-widest uppercase">Scroll</span>
+                    <div className="w-px h-10 bg-gradient-to-b from-primary/80 to-transparent" />
                 </div>
             </div>
         </section>

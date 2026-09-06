@@ -1,63 +1,59 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, Float } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls, Float, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { skills } from "@/lib/data";
 
-function SkillSphere({ skill, position, onPositionUpdate }: {
+function SkillSphere({ skill, position }: {
     skill: typeof skills[0],
-    position: [number, number, number],
-    onPositionUpdate: (name: string, screenPos: { x: number, y: number, z: number }) => void
+    position: [number, number, number]
 }) {
     const meshRef = useRef<THREE.Mesh>(null);
     const [hovered, setHovered] = useState(false);
-    const { camera, size } = useThree();
 
     useFrame((state) => {
         if (meshRef.current) {
             meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.2;
             meshRef.current.rotation.y += 0.01;
-
-            // Update 2D position for label
-            const vector = new THREE.Vector3(...position);
-            vector.project(camera);
-
-            const x = (vector.x * 0.5 + 0.5) * size.width;
-            const y = (-(vector.y) * 0.5 + 0.5) * size.height;
-
-            onPositionUpdate(skill.name, { x, y, z: vector.z });
         }
     });
 
     return (
-        <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+        <Float speed={1.5} rotationIntensity={0.4} floatIntensity={0.4}>
             <mesh
                 ref={meshRef}
                 position={position}
                 onPointerEnter={() => setHovered(true)}
                 onPointerLeave={() => setHovered(false)}
             >
-                <sphereGeometry args={[2.5, 32, 32]} />
+                <sphereGeometry args={[1.8, 24, 24]} />
                 <meshStandardMaterial
-                    color={hovered ? "#a78bfa" : "#7c3aed"}
+                    color={hovered ? "#c084fc" : "#7c3aed"}
                     emissive="#7c3aed"
-                    emissiveIntensity={hovered ? 0.8 : 0.3}
-                    roughness={0.3}
+                    emissiveIntensity={hovered ? 0.9 : 0.35}
+                    roughness={0.25}
                     metalness={0.8}
                 />
+                <Html center distanceFactor={28} style={{ pointerEvents: "none" }}>
+                    <div className={`px-2.5 py-1 rounded-lg backdrop-blur-md transition-all duration-300 select-none ${
+                        hovered 
+                            ? "bg-primary text-white scale-110 shadow-[0_0_20px_rgba(168,85,247,0.8)] border border-white/40" 
+                            : "bg-black/80 text-gray-200 border border-primary/40 shadow-[0_0_12px_rgba(124,58,237,0.3)]"
+                    }`}>
+                        <span className="font-mono text-xs font-bold whitespace-nowrap tracking-wider">{skill.name}</span>
+                    </div>
+                </Html>
             </mesh>
         </Float>
     );
 }
 
-function SkillsSphereCloud({ onPositionUpdate }: {
-    onPositionUpdate: (name: string, screenPos: { x: number, y: number, z: number }) => void
-}) {
+function SkillsSphereCloud() {
     const positions = useMemo(() => {
         const temp: Array<[number, number, number]> = [];
-        const radius = 18; // Keep the user requested spacing
+        const radius = 15; // Slightly reduced radius to keep well away from heading
 
         skills.forEach((_, i) => {
             const phi = Math.acos(-1 + (2 * i) / skills.length);
@@ -80,7 +76,6 @@ function SkillsSphereCloud({ onPositionUpdate }: {
                     key={skill.name}
                     skill={skill}
                     position={positions[i]}
-                    onPositionUpdate={onPositionUpdate}
                 />
             ))}
         </>
@@ -88,31 +83,33 @@ function SkillsSphereCloud({ onPositionUpdate }: {
 }
 
 export function SkillsSphere() {
-    const [labels, setLabels] = useState<Record<string, { x: number, y: number, z: number }>>({});
-
-    const handlePositionUpdate = (name: string, pos: { x: number, y: number, z: number }) => {
-        setLabels(prev => ({ ...prev, [name]: pos }));
-    };
-
     return (
         <section id="skills" className="h-screen flex flex-col items-center justify-center bg-gradient-to-b from-background to-neutral-900 relative overflow-hidden">
-            <div className="absolute top-20 z-10 text-center pointer-events-none">
-                <h2 className="text-4xl md:text-6xl font-bold font-heading mb-4">
+            {/* Heading positioned with clear vertical separation */}
+            <div className="absolute top-8 sm:top-12 z-20 text-center pointer-events-none px-4">
+                <h2 className="text-4xl md:text-6xl font-bold font-heading mb-2">
                     Tech <span className="text-primary">Universe</span>
                 </h2>
+                <p className="text-muted-foreground text-sm md:text-base font-mono">
+                    Drag to rotate & explore the interactive ecosystem
+                </p>
             </div>
 
             <div className="w-full h-full relative">
-                <Canvas camera={{ position: [0, 0, 35], fov: 75 }}>
+                {/* Camera and group adjusted down (y = -3.5) so sphere never collides with heading */}
+                <Canvas camera={{ position: [0, 0, 36], fov: 65 }} dpr={[1, 1.5]}>
                     <color attach="background" args={['#000000']} />
-                    <ambientLight intensity={0.5} />
-                    <pointLight position={[10, 10, 10]} intensity={1} />
-                    <pointLight position={[-10, -10, -10]} intensity={0.5} />
-                    <pointLight position={[0, 10, 0]} intensity={0.5} color="#7c3aed" />
+                    <ambientLight intensity={0.6} />
+                    <pointLight position={[10, 10, 10]} intensity={1.2} />
+                    <pointLight position={[-10, -10, -10]} intensity={0.6} />
+                    <pointLight position={[0, 10, 0]} intensity={0.8} color="#7c3aed" />
 
-                    <SkillsSphereCloud onPositionUpdate={handlePositionUpdate} />
+                    <group position={[0, -3.5, 0]}>
+                        <SkillsSphereCloud />
+                    </group>
 
                     <OrbitControls
+                        target={[0, -3.5, 0]}
                         enableZoom={false}
                         enablePan={false}
                         autoRotate
@@ -121,15 +118,14 @@ export function SkillsSphere() {
                         maxPolarAngle={Math.PI * 0.75}
                     />
 
-                    <mesh>
-                        <sphereGeometry args={[50, 32, 32]} />
+                    <mesh position={[0, -3.5, 0]}>
+                        <sphereGeometry args={[50, 24, 24]} />
                         <meshBasicMaterial color="#000000" side={THREE.BackSide} />
                     </mesh>
                 </Canvas>
 
-                {/* 2D Labels overlay */}
+                {/* HUD Elements for Tech Universe */}
                 <div className="absolute inset-0 pointer-events-none">
-                    {/* HUD Elements for Tech Universe */}
                     <div className="absolute top-1/2 left-8 md:left-20 -translate-y-1/2 flex flex-col gap-8 opacity-40 hover:opacity-100 transition-opacity duration-500 hidden md:flex">
                         <div className="flex flex-col gap-1">
                             <span className="text-[10px] text-primary font-mono tracking-widest uppercase opacity-70">Sector Origin</span>
@@ -156,26 +152,6 @@ export function SkillsSphere() {
                             <span className="text-white font-mono text-sm tracking-tighter">ACTIVE_01</span>
                         </div>
                     </div>
-
-                    {Object.entries(labels).map(([name, pos]) => {
-                        if (pos.z > 1) return null; // Behind camera
-
-                        return (
-                            <div
-                                key={name}
-                                className="absolute -translate-x-1/2 -translate-y-1/2 px-3 py-1.5 bg-black/90 border-2 border-primary/70 rounded-lg backdrop-blur-sm"
-                                style={{
-                                    left: `${pos.x}px`,
-                                    top: `${pos.y}px`,
-                                    opacity: pos.z > 0.5 ? 0.3 : 1,
-                                }}
-                            >
-                                <span className="text-white font-bold text-base whitespace-nowrap">
-                                    {name}
-                                </span>
-                            </div>
-                        );
-                    })}
                 </div>
             </div>
         </section>

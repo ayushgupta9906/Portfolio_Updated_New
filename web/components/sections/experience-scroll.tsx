@@ -29,18 +29,23 @@ export function ExperienceScroll() {
                         <div key={i} className="relative">
                             {/* Card */}
                             <div
-                                className="relative h-[400px] w-[500px] flex-shrink-0 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8 flex flex-col justify-between hover:bg-white/10 transition-all hover:scale-105 hover:border-primary/30"
+                                className="relative h-[440px] w-[520px] max-w-[90vw] flex-shrink-0 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8 flex flex-col justify-between hover:bg-white/10 transition-all hover:scale-105 hover:border-primary/30 overflow-hidden"
                             >
                                 {/* Timeline dot */}
                                 <div className="absolute -left-6 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-primary border-4 border-neutral-900 z-10" />
 
-                                <div>
-                                    <span className="text-sm font-mono text-primary mb-2 block">{exp.period}</span>
-                                    <h3 className="text-3xl font-bold text-white mb-1">{exp.role}</h3>
-                                    <h4 className="text-xl text-gray-400 mb-6">@ {exp.company}</h4>
-                                    <ul className="space-y-2">
+                                <div className="flex-1 overflow-hidden">
+                                    {exp.period ? (
+                                        <span className="text-xs font-mono text-primary mb-2 block uppercase tracking-wider">{exp.period}</span>
+                                    ) : null}
+                                    <h3 className="text-2xl font-bold text-white mb-1 leading-snug">{exp.role}</h3>
+                                    <h4 className="text-lg text-gray-400 mb-4 font-medium">@ {exp.company}</h4>
+                                    <ul className="space-y-2.5">
                                         {Array.isArray(exp.description) && exp.description.map((d, idx) => (
-                                            <li key={idx} className="text-gray-300 text-sm">• {d}</li>
+                                            <li key={idx} className="text-gray-300 text-xs md:text-sm leading-relaxed flex items-start gap-2">
+                                                <span className="text-primary mt-0.5 flex-shrink-0">•</span>
+                                                <span>{d}</span>
+                                            </li>
                                         ))}
                                     </ul>
                                 </div>

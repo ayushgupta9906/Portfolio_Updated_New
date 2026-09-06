@@ -20,7 +20,7 @@ const frames: string[] = Array.from({ length: TOTAL_FRAMES }, (_, i) => {
 export default async function Home() {
 
   return (
-    <div className="flex flex-col min-h-screen relative selection:bg-cyan-500/30 cursor-none">
+    <div className="flex flex-col min-h-screen relative selection:bg-cyan-500/30 md:cursor-none">
       <CustomCursor />
       <WarpBackground />
       <HeroHUD frames={frames} />

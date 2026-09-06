@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Play, Pause, Repeat, Loader2 } from "lucide-react";
+import { MotionValue } from "framer-motion";
 
 interface FrameAnimationProps {
     frames: string[];
@@ -10,7 +11,7 @@ interface FrameAnimationProps {
     autoPlay?: boolean;
     loop?: boolean;
     className?: string;
-    currentFrame?: number; // New prop for manual control
+    currentFrame?: number | MotionValue<number>; // Number or MotionValue for zero-overhead direct canvas updates
 }
 
 export function FrameAnimation({
@@ -57,7 +58,11 @@ export function FrameAnimation({
                             canvasRef.current.width = newImages[0].naturalWidth;
                             canvasRef.current.height = newImages[0].naturalHeight;
 
-                            const initialFrame = currentFrame !== undefined ? currentFrame : 0;
+                            const initialFrame = typeof currentFrame === "number" 
+                                ? currentFrame 
+                                : currentFrame && typeof (currentFrame as any).get === "function"
+                                    ? Math.round((currentFrame as MotionValue<number>).get())
+                                    : 0;
                             if (newImages[initialFrame]) {
                                 ctx.drawImage(newImages[initialFrame], 0, 0);
                             }

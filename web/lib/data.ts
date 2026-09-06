@@ -31,33 +31,20 @@ export const siteConfig = {
 
 export const experience = [
   {
-    role: "Software Developer",
+    role: "Software Engineer",
     company: "Newgen Software Technologies Ltd.",
-    period: "July 2025 - Present",
+    period: "March 2025 - Present",
     location: "Noida, India",
     description: [
-      "Developing scalable enterprise workflows using Java, SQL, and Spring Boot, delivering 15+ enhancements and cutting downtime by 20%.",
-      "Optimizing backend services and database queries, improving application response times by 30% across key business modules.",
-      "Built reusable Java utilities for API validation, request processing, and deployment support, achieving zero rollback incidents in production.",
-      "Designed Spring Boot REST APIs for BMW Customer Portal including contract details, customer information retrieval, and secure document upload services."
-    ]
-  },
-  {
-    role: "Software Developer Intern",
-    company: "Newgen Software Technologies Ltd.",
-    period: "Mar 2025 - June 2025",
-    location: "Noida, India",
-    description: [
-      "Worked extensively with databases and SQL, implementing PL/SQL procedures, triggers, and cursors for business logic automation.",
-      "Developed and tested stored procedures and database-side validations to support BPM and ECM workflows.",
-      "Built basic REST APIs using Java Spring to expose database operations and integrate internal services.",
-      "Supported debugging, deployment, and performance optimization across enterprise modules."
+      "Engineered scalable enterprise workflows using Java, SQL & Spring Boot, delivering 15+ enhancements and reducing downtime by 20%.",
+      "Designed & integrated secure Spring Boot REST APIs with JWT for BMW Customer Portal (100K+ users), cutting API latency by 25%.",
+      "Optimized backend microservices and database queries, improving response times by 30% with zero rollback incidents in production."
     ]
   },
   {
     role: "SDE Intern",
     company: "LENSKART",
-    period: "June 2024 - July 2024",
+    period: "May 2024 - July 2024",
     description: [
       "Designed and developed a pioneering Remote Optometry Service, allowing eye tests without in-store optometrists, thus enhancing test quality.",
       "Implemented a staff allocation solution in Lenskart stores, enhancing user experience with dedicated staff and reducing dropouts by over 13%.",
@@ -65,22 +52,13 @@ export const experience = [
     ]
   },
   {
-    role: "Product Designer",
-    company: "Freelance",
-    period: "April 2024 - May 2024",
+    role: "TEEP Research Intern",
+    company: "Department of Computer Science & Engineering, Yuan Ze University",
+    period: "",
+    location: "Taoyuan, Taiwan",
     description: [
-      "Designed intuitive UIs with Adobe XD and Sketch, collaborating on responsive designs using HTML, CSS, and JavaScript frameworks.",
-      "Utilized SolidWorks and AutoCAD for precise 3D modeling, integrating computational geometry to optimize designs for manufacturing.",
-      "Leveraged SQL and NoSQL databases for user data analysis, driving design decisions and enhancements."
-    ]
-  },
-  {
-    role: "Web Developer",
-    company: "SAE-ZHCET",
-    period: "April 2023 - Feb 2024",
-    description: [
-      "Developed a responsive web app for optimal user experience across devices.",
-      "Managing the platform and community, developing and deploying solutions using ReactJs, MongoDB, NodeJs and Google Cloud Platform."
+      "Conducted advanced computer science research under Department Chair Dr. Yu-Ting Tsai.",
+      "Selected for the prestigious Taiwan Experience Education Program (TEEP) at the Department of Computer Science & Engineering."
     ]
   },
   {
@@ -178,15 +156,52 @@ export const aboutContent = {
 // Real projects from resume and portfolio
 export const projects = [
   {
+    title: "Fit Empire",
+    description: "Launched a scalable full stack fitness membership platform featuring secure authentication, membership management, class booking, QR-based check-ins, rewards, AI-powered fitness recommendations, and an admin dashboard.",
+    tech: ["Java", "Spring Boot", "React Native", "PostgreSQL", "TypeScript"],
+    links: {
+      demo: "https://fitempire.tech",
+      code: "https://github.com/ayushgupta9906/FitEmpire"
+    },
+    image: "/projects/fitempire_landing.png",
+    images: [
+      "/projects/fitempire_landing.png",
+      "/projects/fitempire.png"
+    ],
+    status: "Ongoing Project"
+  },
+  {
     title: "BosDB – Browser Based Database",
     description: "Architected a browser-based database platform with a native Git-like version control system for schema and data changes. Enabled commits, branches, merges, and rollback.",
     tech: ["Next.js", "TypeScript", "Node.js", "PostgreSQL", "MongoDB", "Redis", "Docker"],
     links: {
-      demo: "https://www.bosdb.tech/",
-      code: "https://github.com/ayushgupta9906/BosDB"
+      demo: "https://github.com/Omni-Gang/BosDB-Browser--",
+      code: "https://github.com/Omni-Gang/BosDB-Browser--"
     },
     image: "/projects/bosdb.png",
-    status: "Live Beta"
+    status: "Ongoing Project"
+  },
+  {
+    title: "Ziro - Project Management & Collaboration Platform",
+    description: "Implemented a scalable full-stack platform with real-time processing WebSockets & Kafka, secured via JWT & OAuth2 RBAC for task creation, assignment, tracking. Created a microservices backend with PostgreSQL, MongoDB, Redis caching, deployed via Docker with service isolation & horizontal scaling and built AI powered assistants using RAG, LangChain & Groq Llama-3.",
+    tech: ["Spring Boot", "Kafka", "Redis", "PostgreSQL", "Next.js", "Docker"],
+    links: {
+      demo: "https://zironow.vercel.app",
+      code: "https://github.com/ayushgupta9906/Ziro"
+    },
+    image: "/projects/ziro.png",
+    status: "Live"
+  },
+  {
+    title: "Docify – Free Online PDF Tools",
+    description: "Professional PDF platform to edit, convert, merge, and split PDF documents. Engineered for high-speed processing, client privacy, and automatic file purging with zero signup required.",
+    tech: ["Next.js", "TypeScript", "Tailwind CSS", "PDF Processing", "Web APIs"],
+    links: {
+      demo: "https://www.docifynow.me/",
+      code: "https://github.com/ayushgupta9906/Docify"
+    },
+    image: "/projects/docify.png",
+    status: "Live"
   },
   {
     title: "Oxon AI – Intelligent IDE",
@@ -274,7 +289,7 @@ export const projects = [
     description: "Responsive automotive club website for SAE-ZHCET, managing events, team data, and community interactions.",
     tech: ["React", "Node.js", "MongoDB", "Express"],
     links: {
-      demo: "https://ayushgupta9906.github.io/saewebmaster/",
+      demo: "https://saezhcet.vercel.app/",
       code: "https://github.com/ayushgupta9906/saewebmaster"
     },
     image: "https://laserx.vercel.app/assests/images/saezhcet.png"
