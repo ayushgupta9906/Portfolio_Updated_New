@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,6 +11,7 @@ export function ProjectsCarousel() {
     const [selectedProject, setSelectedProject] = useState<(typeof projects)[0] | null>(null);
     const [activeImageIndex, setActiveImageIndex] = useState(0);
     const [isTouchDevice, setIsTouchDevice] = useState(false);
+    const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
     useEffect(() => {
         setIsTouchDevice(window.matchMedia("(hover: none)").matches || 'ontouchstart' in window);
@@ -404,3 +405,4 @@ export function ProjectsCarousel() {
         </section>
     );
 }
+

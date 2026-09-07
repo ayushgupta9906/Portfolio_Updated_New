@@ -40,7 +40,7 @@ export function TiltCard({ src, alt }: { src: string; alt: string }) {
             }}
             onMouseMove={onMouseMove}
             onMouseLeave={onMouseLeave}
-            className="relative w-full max-w-sm aspect-[3/4] rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 p-1 cursor-pointer"
+            className="relative w-full max-w-[300px] sm:max-w-sm aspect-[3/4] rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 p-1 cursor-pointer mx-auto md:mr-0"
         >
             <div
                 style={{ transform: "translateZ(50px)" }}
@@ -50,6 +50,8 @@ export function TiltCard({ src, alt }: { src: string; alt: string }) {
                     src={src}
                     alt={alt}
                     fill
+                    sizes="(max-width: 768px) 300px, 384px"
+                    priority
                     className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />

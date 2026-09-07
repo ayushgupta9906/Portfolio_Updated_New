@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
@@ -268,7 +268,10 @@ export function SkillsSphere() {
                             autoRotateSpeed={1.0}
                             minPolarAngle={Math.PI / 4}
                             maxPolarAngle={Math.PI * 0.75}
-                            touches={{
+                            touches={isMobile ? {
+                                ONE: THREE.TOUCH.NONE,
+                                TWO: THREE.TOUCH.ROTATE
+                            } : {
                                 ONE: THREE.TOUCH.ROTATE,
                                 TWO: THREE.TOUCH.DOLLY_ROTATE
                             }}
@@ -314,3 +317,4 @@ export function SkillsSphere() {
         </section>
     );
 }
+
