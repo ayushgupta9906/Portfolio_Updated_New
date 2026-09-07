@@ -13,11 +13,14 @@ export function Education() {
     }));
 
     return (
-        <section id="education" className="py-20 bg-background">
-            <div className="container mx-auto px-4 md:px-6">
-                <h2 className="text-3xl md:text-5xl font-bold font-heading mb-16 text-center">
-                    Educational <span className="text-primary">Journey</span>
-                </h2>
+        <section id="education" className="py-16 md:py-24 bg-background relative overflow-hidden">
+            <div className="container mx-auto px-4 md:px-6 max-w-5xl">
+                <div className="text-center mb-10 sm:mb-16">
+                    <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-primary/80">Background</span>
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-heading mt-1 text-white">
+                        Educational <span className="text-primary">Journey</span>
+                    </h2>
+                </div>
 
                 <Timeline items={items} />
             </div>

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
 import { Play, Pause, Repeat, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { MotionValue } from "framer-motion";
 
 interface FrameAnimationProps {
@@ -11,7 +11,7 @@ interface FrameAnimationProps {
     autoPlay?: boolean;
     loop?: boolean;
     className?: string;
-    currentFrame?: number | MotionValue<number>; // Number or MotionValue for zero-overhead direct canvas updates
+    currentFrame?: number | MotionValue<number>; // Number or MotionValue for direct canvas updates
 }
 
 export function FrameAnimation({
@@ -32,6 +32,7 @@ export function FrameAnimation({
     const lastFrameTimeRef = useRef<number>(0);
     const animationFrameIdRef = useRef<number | null>(null);
     const imagesRef = useRef<HTMLImageElement[]>([]);
+    const lastDrawnIndexRef = useRef<number>(-1);
 
     // Preload images
     useEffect(() => {
@@ -54,7 +55,6 @@ export function FrameAnimation({
                     if (canvasRef.current && newImages[0]) {
                         const ctx = canvasRef.current.getContext("2d");
                         if (ctx) {
-                            // Set canvas dimensions to match image
                             canvasRef.current.width = newImages[0].naturalWidth;
                             canvasRef.current.height = newImages[0].naturalHeight;
 
@@ -63,8 +63,10 @@ export function FrameAnimation({
                                 : currentFrame && typeof (currentFrame as any).get === "function"
                                     ? Math.round((currentFrame as MotionValue<number>).get())
                                     : 0;
-                            if (newImages[initialFrame]) {
-                                ctx.drawImage(newImages[initialFrame], 0, 0);
+                            const safeInitial = Math.max(0, Math.min(initialFrame, totalFrames - 1));
+                            if (newImages[safeInitial]) {
+                                ctx.drawImage(newImages[safeInitial], 0, 0);
+                                lastDrawnIndexRef.current = safeInitial;
                             }
                         }
                     }
@@ -87,13 +89,17 @@ export function FrameAnimation({
         if (currentFrame === undefined || isLoading || !imagesRef.current.length) return;
 
         const drawFrame = (frameVal: number) => {
+            const safeFrameIndex = Math.max(0, Math.min(Math.round(frameVal), frames.length - 1));
+            // Crucial performance optimization: skip duplicate draws during continuous scroll
+            if (safeFrameIndex === lastDrawnIndexRef.current) return;
+
             const canvas = canvasRef.current;
             const ctx = canvas?.getContext("2d");
-            const safeFrameIndex = Math.max(0, Math.min(Math.round(frameVal), frames.length - 1));
             const image = imagesRef.current[safeFrameIndex];
 
             if (canvas && ctx && image) {
                 ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+                lastDrawnIndexRef.current = safeFrameIndex;
             }
         };
 
@@ -118,18 +124,14 @@ export function FrameAnimation({
             const elapsed = timestamp - lastFrameTimeRef.current;
 
             if (elapsed > interval) {
-                // Draw current frame
                 const canvas = canvasRef.current;
                 const ctx = canvas?.getContext("2d");
                 const currentImage = imagesRef.current[frameRef.current];
 
                 if (canvas && ctx && currentImage) {
-                    // Start new frame
-                    // ctx.clearRect(0, 0, canvas.width, canvas.height); // Not strictly necessary if drawing full opacity
                     ctx.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
                 }
 
-                // Advance frame
                 if (frameRef.current < frames.length - 1) {
                     frameRef.current++;
                 } else {
@@ -158,7 +160,6 @@ export function FrameAnimation({
     const togglePlay = () => setIsPlaying(!isPlaying);
     const toggleLoop = () => setIsLooping(!isLooping);
 
-    // Hide controls if controlled externally
     const showControls = currentFrame === undefined;
 
     return (
@@ -177,7 +178,6 @@ export function FrameAnimation({
                 className="w-full h-full object-contain"
             />
 
-            {/* Controls Overlay - Visible on hover or when paused */}
             {showControls && (
                 <div className={cn(
                     "absolute bottom-4 right-4 flex gap-2 transition-opacity duration-300",

@@ -10,6 +10,11 @@ export function ProjectsCarousel() {
     const [showAll, setShowAll] = useState(false);
     const [selectedProject, setSelectedProject] = useState<(typeof projects)[0] | null>(null);
     const [activeImageIndex, setActiveImageIndex] = useState(0);
+    const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+    useEffect(() => {
+        setIsTouchDevice(window.matchMedia("(hover: none)").matches || 'ontouchstart' in window);
+    }, []);
 
     // Reset active image index whenever a new project is selected
     useEffect(() => {
@@ -62,42 +67,43 @@ export function ProjectsCarousel() {
     const currentDisplayImage = projectImages[activeImageIndex] || selectedProject?.image;
 
     return (
-        <section id="projects" className="py-20 md:py-32 bg-background relative overflow-hidden">
+        <section id="projects" className="py-16 md:py-32 bg-background relative overflow-hidden">
             <div className="container mx-auto px-4 md:px-6 max-w-7xl">
-                <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-6xl font-bold font-heading mb-4">
+                <div className="text-center mb-10 sm:mb-16">
+                    <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-primary/80">Portfolio</span>
+                    <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold font-heading mb-2 sm:mb-4 text-white">
                         Featured <span className="text-primary">Projects</span>
                     </h2>
-                    <p className="text-muted-foreground text-lg">
+                    <p className="text-muted-foreground text-sm sm:text-base md:text-lg">
                         Building solutions that make a difference
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                     {displayedProjects.map((project, idx) => (
                         <motion.div
                             key={project.title}
                             layout
                             className="relative group cursor-pointer h-full"
-                            onHoverStart={() => setHoveredIndex(idx)}
-                            onHoverEnd={() => setHoveredIndex(null)}
+                            onHoverStart={() => !isTouchDevice && setHoveredIndex(idx)}
+                            onHoverEnd={() => !isTouchDevice && setHoveredIndex(null)}
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: (idx % 3) * 0.1 }}
                             onClick={() => setSelectedProject(project)}
                             animate={{
-                                opacity: hoveredIndex !== null && hoveredIndex !== idx ? 0.4 : 1,
-                                filter: hoveredIndex !== null && hoveredIndex !== idx ? "blur(2px)" : "blur(0px)",
+                                opacity: !isTouchDevice && hoveredIndex !== null && hoveredIndex !== idx ? 0.4 : 1,
+                                filter: !isTouchDevice && hoveredIndex !== null && hoveredIndex !== idx ? "blur(2px)" : "blur(0px)",
                             }}
                         >
                             <motion.div
-                                className={`relative bg-card border border-border rounded-3xl overflow-hidden h-full flex flex-col transition-colors duration-500 ${
-                                    hoveredIndex === idx ? "z-50 shadow-[0_0_80px_rgba(124,58,237,0.3)] border-primary" : "hover:border-primary/30"
+                                className={`relative bg-card border border-border rounded-2xl sm:rounded-3xl overflow-hidden h-full flex flex-col transition-colors duration-500 ${
+                                    !isTouchDevice && hoveredIndex === idx ? "z-50 shadow-[0_0_80px_rgba(124,58,237,0.3)] border-primary" : "hover:border-primary/30"
                                 }`}
                                 animate={{
-                                    scale: hoveredIndex === idx ? 1.08 : 1,
-                                    y: hoveredIndex === idx ? -10 : 0
+                                    scale: !isTouchDevice && hoveredIndex === idx ? 1.05 : 1,
+                                    y: !isTouchDevice && hoveredIndex === idx ? -6 : 0
                                 }}
                                 transition={{
                                     type: "spring",
@@ -106,9 +112,9 @@ export function ProjectsCarousel() {
                                 }}
                             >
                                 {/* Project Preview Image */}
-                                <div className="h-56 bg-neutral-900 relative overflow-hidden">
+                                <div className="h-48 sm:h-56 bg-neutral-900 relative overflow-hidden">
                                     {(project as any).status && (
-                                        <div className={`absolute top-4 right-4 z-20 px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full shadow-xl ${
+                                        <div className={`absolute top-3 right-3 sm:top-4 sm:right-4 z-20 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-widest rounded-full shadow-xl ${
                                             String((project as any).status).toLowerCase().includes("ongoing") ||
                                             String((project as any).status).toLowerCase().includes("development") ||
                                             String((project as any).status).toLowerCase().includes("beta")
@@ -118,75 +124,79 @@ export function ProjectsCarousel() {
                                             {(project as any).status}
                                         </div>
                                     )}
-                                    {project.image && project.image !== "/project_placeholder.png" ? (
+
+                                    {project.image ? (
+                                        // eslint-disable-next-line @next/next/no-img-element
                                         <img
                                             src={project.image}
                                             alt={project.title}
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                            loading="lazy"
                                         />
                                     ) : (
-                                        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-transparent">
-                                            <div className="text-6xl font-bold text-white/5 uppercase tracking-tighter">
-                                                {project.title.split(' ')[0]}
-                                            </div>
+                                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-neutral-800 to-neutral-900 border-b border-border/50">
+                                            <span className="text-muted-foreground/30 font-mono text-xs tracking-widest uppercase">
+                                                Visual Interface
+                                            </span>
                                         </div>
                                     )}
 
-                                    {/* Hover overlay */}
-                                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center backdrop-blur-[2px]">
-                                        <div className="bg-white/95 text-black px-5 py-2.5 rounded-full font-bold transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 flex items-center gap-2 shadow-2xl">
-                                            <Maximize2 size={16} /> Quick Preview
-                                        </div>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white text-xs sm:text-sm font-semibold backdrop-blur-[2px]">
+                                        <Maximize2 size={16} /> View Details & Showcase
                                     </div>
                                 </div>
 
-                                {/* Project Info */}
-                                <div className="p-8 flex flex-col flex-1">
-                                    <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors line-clamp-1">
-                                        {project.title}
-                                    </h3>
-                                    <p className="text-sm text-muted-foreground mb-6 line-clamp-3 leading-relaxed">
-                                        {project.description}
-                                    </p>
-
-                                    {/* Tech Stack */}
-                                    <div className="flex flex-wrap gap-2 mb-8 mt-auto">
-                                        {project.tech.map((tech) => (
-                                            <span
-                                                key={tech}
-                                                className="text-[10px] uppercase tracking-wider px-2.5 py-1 bg-secondary/50 border border-border text-muted-foreground rounded-md font-mono"
-                                            >
-                                                {tech}
-                                            </span>
-                                        ))}
+                                <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <h3 className="text-lg sm:text-xl font-bold mb-2 group-hover:text-primary transition-colors line-clamp-1">
+                                            {project.title}
+                                        </h3>
+                                        <p className="text-muted-foreground text-xs sm:text-sm line-clamp-3 mb-4 leading-relaxed">
+                                            {project.description}
+                                        </p>
                                     </div>
 
-                                    {/* Action Buttons */}
-                                    <div className="grid grid-cols-2 gap-4 mt-auto">
-                                        <button
-                                            className="py-3 px-4 rounded-2xl transition-all font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-primary/20 bg-primary text-primary-foreground hover:bg-primary/90"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                if (project.links.demo && project.links.demo !== "#") {
-                                                    window.open(project.links.demo, "_blank");
-                                                }
-                                            }}
-                                        >
-                                            <ExternalLink size={16} />
-                                            View
-                                        </button>
-                                        {project.links.code && project.links.code !== "#" ? (
-                                            <button
-                                                className="py-3 px-4 border border-border rounded-2xl transition-all font-bold text-sm flex items-center justify-center gap-2 backdrop-blur-sm bg-secondary/80 hover:bg-secondary"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    window.open(project.links.code, "_blank");
-                                                }}
-                                            >
-                                                <Github size={16} />
-                                                Code
-                                            </button>
-                                        ) : null}
+                                    <div>
+                                        <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4">
+                                            {project.tech.slice(0, 4).map((t) => (
+                                                <span
+                                                    key={t}
+                                                    className="text-[10px] sm:text-xs font-mono px-2 py-0.5 rounded-md bg-secondary/80 text-secondary-foreground border border-border/50"
+                                                >
+                                                    {t}
+                                                </span>
+                                            ))}
+                                            {project.tech.length > 4 && (
+                                                <span className="text-[10px] sm:text-xs font-mono px-1.5 py-0.5 rounded-md bg-secondary/40 text-muted-foreground">
+                                                    +{project.tech.length - 4}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <div className="flex items-center gap-3 pt-3 border-t border-border/40" onClick={(e) => e.stopPropagation()}>
+                                            {project.links.demo && project.links.demo !== "#" && (
+                                                <a
+                                                    href={project.links.demo}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-1.5 text-xs text-primary hover:underline font-semibold"
+                                                >
+                                                    <ExternalLink size={14} /> Live Demo
+                                                </a>
+                                            )}
+                                            {project.links.code && project.links.code !== "#" && (
+                                                <a
+                                                    href={project.links.code}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground font-semibold"
+                                                >
+                                                    <Github size={14} /> Code
+                                                </a>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </motion.div>
@@ -194,107 +204,67 @@ export function ProjectsCarousel() {
                     ))}
                 </div>
 
-                {/* View All Projects Button */}
-                {!showAll && projects.length > 6 && (
-                    <div className="text-center mt-12">
+                {/* Show All / Show Less Toggle Button */}
+                {projects.length > 6 && (
+                    <div className="text-center mt-10 sm:mt-14">
                         <button
-                            onClick={() => setShowAll(true)}
-                            className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all font-semibold shadow-lg hover:shadow-xl group"
+                            onClick={() => setShowAll((prev) => !prev)}
+                            className="px-6 sm:px-8 py-3 rounded-xl bg-secondary/80 hover:bg-secondary text-foreground text-xs sm:text-sm font-semibold border border-border/80 transition-all hover:scale-105 active:scale-95"
                         >
-                            View All {projects.length} Projects
-                            <svg
-                                className="w-5 h-5 transition-transform group-hover:translate-y-1"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
+                            {showAll ? `Show Less (${displayedProjects.length} shown)` : `View All Projects (${projects.length})`}
                         </button>
                     </div>
                 )}
             </div>
 
-            {/* In-Page Big Screen Modal Lightbox */}
+            {/* ========================================================================= */}
+            {/* FULL-SCREEN SHOWCASE MODAL WITH MULTI-IMAGE CAROUSEL                    */}
+            {/* ========================================================================= */}
             <AnimatePresence>
                 {selectedProject && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="fixed inset-0 z-[9990] flex items-center justify-center p-3 sm:p-6 md:p-8 bg-black/85 backdrop-blur-xl"
+                        className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/85 backdrop-blur-md"
                         onClick={() => setSelectedProject(null)}
                     >
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.93, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.93, y: 20 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                            className="relative w-full max-w-5xl max-h-[92vh] bg-neutral-950/95 border border-white/15 rounded-3xl overflow-hidden shadow-[0_0_90px_rgba(0,0,0,0.9),0_0_50px_rgba(124,58,237,0.25)] flex flex-col"
+                            initial={{ scale: 0.92, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.92, opacity: 0, y: 20 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 28 }}
+                            className="relative w-full max-w-4xl max-h-[90vh] bg-neutral-900 border border-white/15 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col"
                             onClick={(e) => e.stopPropagation()}
                         >
                             {/* Close Button */}
-                            <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
-                                <button
-                                    onClick={() => setSelectedProject(null)}
-                                    className="p-2.5 rounded-full bg-black/60 hover:bg-white/20 border border-white/20 text-white transition-all hover:scale-110 shadow-lg backdrop-blur-md flex items-center gap-1.5 text-xs font-mono"
-                                    title="Close (Esc)"
-                                >
-                                    <X size={18} />
-                                    <span className="hidden sm:inline pr-1">ESC</span>
-                                </button>
-                            </div>
+                            <button
+                                onClick={() => setSelectedProject(null)}
+                                className="absolute top-3 right-3 sm:top-5 sm:right-5 z-40 p-2 sm:p-2.5 rounded-full bg-black/70 hover:bg-white/20 border border-white/20 text-white backdrop-blur-md transition-all hover:scale-110 shadow-xl"
+                                aria-label="Close modal"
+                            >
+                                <X size={18} />
+                            </button>
 
-                            {/* Big Screen Image Showcase */}
-                            <div className="relative w-full h-[280px] sm:h-[380px] md:h-[460px] bg-neutral-900 flex items-center justify-center overflow-hidden border-b border-white/10 group select-none">
-                                {currentDisplayImage && currentDisplayImage !== "/project_placeholder.png" ? (
-                                    <>
-                                        <div 
-                                            key={`bg-${activeImageIndex}`}
-                                            className="absolute inset-0 bg-cover bg-center blur-3xl opacity-30 scale-125 pointer-events-none transition-all duration-700"
-                                            style={{ backgroundImage: `url(${currentDisplayImage})` }}
-                                        />
-                                        <AnimatePresence mode="wait">
-                                            <motion.div
-                                                key={`img-wrap-${activeImageIndex}`}
-                                                drag={projectImages.length > 1 ? "x" : false}
-                                                dragConstraints={{ left: 0, right: 0 }}
-                                                dragElastic={0.2}
-                                                onDragEnd={(_, { offset, velocity }) => {
-                                                    if (projectImages.length <= 1) return;
-                                                    if (offset.x < -40 || velocity.x < -200) {
-                                                        setActiveImageIndex((prev) => (prev < projectImages.length - 1 ? prev + 1 : 0));
-                                                    } else if (offset.x > 40 || velocity.x > 200) {
-                                                        setActiveImageIndex((prev) => (prev > 0 ? prev - 1 : projectImages.length - 1));
-                                                    }
-                                                }}
-                                                className={`relative z-10 w-full h-full flex items-center justify-center ${
-                                                    projectImages.length > 1 ? "cursor-grab active:cursor-grabbing" : ""
-                                                }`}
-                                            >
-                                                <motion.img
-                                                    src={currentDisplayImage}
-                                                    alt={`${selectedProject.title} screenshot ${activeImageIndex + 1}`}
-                                                    initial={{ opacity: 0, scale: 0.97 }}
-                                                    animate={{ opacity: 1, scale: 1 }}
-                                                    exit={{ opacity: 0, scale: 0.97 }}
-                                                    transition={{ duration: 0.25 }}
-                                                    draggable={false}
-                                                    className="w-full h-full object-contain max-h-full drop-shadow-2xl select-none pointer-events-none"
-                                                />
-                                            </motion.div>
-                                        </AnimatePresence>
-                                    </>
+                            {/* Image Showcase Area */}
+                            <div className="relative w-full h-[210px] sm:h-[320px] md:h-[460px] bg-neutral-950 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                {currentDisplayImage ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img
+                                        key={currentDisplayImage}
+                                        src={currentDisplayImage}
+                                        alt={`${selectedProject.title} slide ${activeImageIndex + 1}`}
+                                        className="w-full h-full object-contain select-none transition-all duration-300"
+                                    />
                                 ) : (
-                                    <div className="text-8xl font-black text-white/5 uppercase tracking-tighter">
-                                        {selectedProject.title.split(' ')[0]}
+                                    <div className="text-center p-8">
+                                        <p className="text-muted-foreground/50 font-mono text-sm">Visual preview unavailable</p>
                                     </div>
                                 )}
 
-                                {/* Status Badge */}
+                                {/* Status Pill inside modal */}
                                 {(selectedProject as any).status && (
-                                    <div className={`absolute top-4 left-4 z-20 px-3.5 py-1.5 text-xs font-black uppercase tracking-widest rounded-full shadow-2xl backdrop-blur-md ${
+                                    <div className={`absolute top-3 left-3 sm:top-5 sm:left-5 z-30 px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-widest rounded-full shadow-2xl ${
                                         String((selectedProject as any).status).toLowerCase().includes("ongoing") ||
                                         String((selectedProject as any).status).toLowerCase().includes("development") ||
                                         String((selectedProject as any).status).toLowerCase().includes("beta")
@@ -314,10 +284,10 @@ export function ProjectsCarousel() {
                                                 e.stopPropagation();
                                                 setActiveImageIndex((prev) => (prev > 0 ? prev - 1 : projectImages.length - 1));
                                             }}
-                                            className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-black/60 hover:bg-white/20 border border-white/20 text-white backdrop-blur-md transition-all hover:scale-110 shadow-xl"
+                                            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-2.5 rounded-full bg-black/60 hover:bg-white/20 border border-white/20 text-white backdrop-blur-md transition-all hover:scale-110 shadow-xl"
                                             aria-label="Previous Image"
                                         >
-                                            <ChevronLeft size={22} />
+                                            <ChevronLeft size={20} />
                                         </button>
 
                                         {/* Right arrow */}
@@ -326,14 +296,14 @@ export function ProjectsCarousel() {
                                                 e.stopPropagation();
                                                 setActiveImageIndex((prev) => (prev < projectImages.length - 1 ? prev + 1 : 0));
                                             }}
-                                            className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-black/60 hover:bg-white/20 border border-white/20 text-white backdrop-blur-md transition-all hover:scale-110 shadow-xl"
+                                            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-2.5 rounded-full bg-black/60 hover:bg-white/20 border border-white/20 text-white backdrop-blur-md transition-all hover:scale-110 shadow-xl"
                                             aria-label="Next Image"
                                         >
-                                            <ChevronRight size={22} />
+                                            <ChevronRight size={20} />
                                         </button>
 
-                                        {/* Minimal Slide Indicators at Bottom - NO wording (only sliding dots) */}
-                                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 shadow-2xl">
+                                        {/* Slide Indicators */}
+                                        <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 sm:gap-2 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 shadow-2xl">
                                             {projectImages.map((_, i) => (
                                                 <button
                                                     key={i}
@@ -344,8 +314,8 @@ export function ProjectsCarousel() {
                                                     aria-label={`Slide ${i + 1}`}
                                                     className={`transition-all duration-300 rounded-full ${
                                                         activeImageIndex === i
-                                                            ? "w-6 h-2 bg-gradient-to-r from-primary to-cyan-400 shadow-[0_0_10px_rgba(168,85,247,0.8)]"
-                                                            : "w-2 h-2 bg-white/40 hover:bg-white/80"
+                                                            ? "w-5 sm:w-6 h-1.5 sm:h-2 bg-gradient-to-r from-primary to-cyan-400 shadow-[0_0_10px_rgba(168,85,247,0.8)]"
+                                                            : "w-1.5 sm:w-2 h-1.5 sm:h-2 bg-white/40 hover:bg-white/80"
                                                     }`}
                                                 />
                                             ))}
@@ -355,26 +325,26 @@ export function ProjectsCarousel() {
                             </div>
 
                             {/* Project Details & Action Area */}
-                            <div className="p-6 md:p-8 overflow-y-auto flex flex-col gap-6 max-h-[45vh]">
+                            <div className="p-5 sm:p-6 md:p-8 overflow-y-auto flex flex-col gap-4 sm:gap-6">
                                 <div>
-                                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-3">
+                                    <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-2">
                                         {selectedProject.title}
                                     </h2>
-                                    <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
+                                    <p className="text-gray-300 text-xs sm:text-sm md:text-base leading-relaxed">
                                         {selectedProject.description}
                                     </p>
                                 </div>
 
                                 {/* Tech Stack Chips */}
                                 <div>
-                                    <h4 className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-2.5">
+                                    <h4 className="text-[10px] sm:text-xs uppercase tracking-widest text-muted-foreground font-mono mb-2">
                                         Technologies & Architecture
                                     </h4>
-                                    <div className="flex flex-wrap gap-2">
+                                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
                                         {selectedProject.tech.map((t) => (
                                             <span
                                                 key={t}
-                                                className="text-xs font-mono px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-gray-200"
+                                                className="text-[10px] sm:text-xs font-mono px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-gray-200"
                                             >
                                                 {t}
                                             </span>
@@ -383,15 +353,15 @@ export function ProjectsCarousel() {
                                 </div>
 
                                 {/* Modal Actions */}
-                                <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-white/10">
+                                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-4 border-t border-white/10">
                                     {selectedProject.links.demo && selectedProject.links.demo !== "#" && (
                                         <a
                                             href={selectedProject.links.demo}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="px-6 py-3 rounded-2xl bg-gradient-to-r from-primary to-violet-600 hover:from-primary/90 hover:to-violet-500 text-white font-bold text-sm flex items-center gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105 transition-all"
+                                            className="px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-violet-600 hover:from-primary/90 hover:to-violet-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] transition-all"
                                         >
-                                            <ExternalLink size={18} />
+                                            <ExternalLink size={16} />
                                             Visit Live Website
                                         </a>
                                     )}
@@ -400,9 +370,9 @@ export function ProjectsCarousel() {
                                             href={selectedProject.links.code}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="px-6 py-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-bold text-sm flex items-center gap-2 hover:scale-105 transition-all"
+                                            className="px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 hover:scale-[1.02] transition-all"
                                         >
-                                            <Github size={18} />
+                                            <Github size={16} />
                                             View Source Code
                                         </a>
                                     )}

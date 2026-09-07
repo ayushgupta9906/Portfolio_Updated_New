@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useMemo, useRef, useState, useEffect } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Float, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { skills } from "@/lib/data";
@@ -21,14 +21,14 @@ function SkillSphere({ skill, position }: {
     });
 
     return (
-        <Float speed={1.5} rotationIntensity={0.4} floatIntensity={0.4}>
+        <Float speed={1.2} rotationIntensity={0.3} floatIntensity={0.3}>
             <mesh
                 ref={meshRef}
                 position={position}
                 onPointerEnter={() => setHovered(true)}
                 onPointerLeave={() => setHovered(false)}
             >
-                <sphereGeometry args={[1.8, 24, 24]} />
+                <sphereGeometry args={[1.7, 18, 18]} />
                 <meshStandardMaterial
                     color={hovered ? "#c084fc" : "#7c3aed"}
                     emissive="#7c3aed"
@@ -37,12 +37,12 @@ function SkillSphere({ skill, position }: {
                     metalness={0.8}
                 />
                 <Html center distanceFactor={28} style={{ pointerEvents: "none" }}>
-                    <div className={`px-2.5 py-1 rounded-lg backdrop-blur-md transition-all duration-300 select-none ${
+                    <div className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg backdrop-blur-sm transition-all duration-300 select-none ${
                         hovered 
                             ? "bg-primary text-white scale-110 shadow-[0_0_20px_rgba(168,85,247,0.8)] border border-white/40" 
                             : "bg-black/80 text-gray-200 border border-primary/40 shadow-[0_0_12px_rgba(124,58,237,0.3)]"
                     }`}>
-                        <span className="font-mono text-xs font-bold whitespace-nowrap tracking-wider">{skill.name}</span>
+                        <span className="font-mono text-[10px] sm:text-xs font-bold whitespace-nowrap tracking-wider">{skill.name}</span>
                     </div>
                 </Html>
             </mesh>
@@ -50,10 +50,9 @@ function SkillSphere({ skill, position }: {
     );
 }
 
-function SkillsSphereCloud() {
+function SkillsSphereCloud({ radius = 15 }: { radius?: number }) {
     const positions = useMemo(() => {
         const temp: Array<[number, number, number]> = [];
-        const radius = 15; // Slightly reduced radius to keep well away from heading
 
         skills.forEach((_, i) => {
             const phi = Math.acos(-1 + (2 * i) / skills.length);
@@ -67,7 +66,7 @@ function SkillsSphereCloud() {
         });
 
         return temp;
-    }, []);
+    }, [radius]);
 
     return (
         <>
@@ -82,44 +81,100 @@ function SkillsSphereCloud() {
     );
 }
 
+function ResponsiveController({ isMobile }: { isMobile: boolean }) {
+    const { camera } = useThree();
+    useEffect(() => {
+        camera.position.set(0, 0, isMobile ? 48 : 36);
+        camera.updateProjectionMatrix();
+    }, [isMobile, camera]);
+    return null;
+}
+
 export function SkillsSphere() {
+    const sectionRef = useRef<HTMLElement>(null);
+    const [isMobile, setIsMobile] = useState(false);
+    const [isInView, setIsInView] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+
+        // Observer to only run the Three.js render loop when the section is in or near the viewport
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setIsInView(entry.isIntersecting);
+            },
+            { rootMargin: "250px 0px" }
+        );
+
+        if (sectionRef.current) {
+            observer.observe(sectionRef.current);
+        }
+
+        return () => {
+            window.removeEventListener("resize", checkMobile);
+            observer.disconnect();
+        };
+    }, []);
+
     return (
-        <section id="skills" className="h-screen flex flex-col items-center justify-center bg-gradient-to-b from-background to-neutral-900 relative overflow-hidden">
-            {/* Heading positioned with clear vertical separation */}
-            <div className="absolute top-8 sm:top-12 z-20 text-center pointer-events-none px-4">
-                <h2 className="text-4xl md:text-6xl font-bold font-heading mb-2">
+        <section
+            ref={sectionRef}
+            id="skills"
+            className="h-screen flex flex-col items-center justify-center bg-gradient-to-b from-background to-neutral-900 relative overflow-hidden will-change-transform"
+        >
+            {/* Heading */}
+            <div className="absolute top-6 sm:top-12 z-20 text-center pointer-events-none px-4">
+                <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold font-heading mb-1.5 sm:mb-2 text-white">
                     Tech <span className="text-primary">Universe</span>
                 </h2>
-                <p className="text-muted-foreground text-sm md:text-base font-mono">
-                    Drag to rotate & explore the interactive ecosystem
+                <p className="text-muted-foreground text-xs sm:text-sm md:text-base font-mono">
+                    {isMobile ? "Interactive 3D Skill Galaxy" : "Drag to rotate & explore the interactive ecosystem"}
                 </p>
             </div>
 
-            <div className="w-full h-full relative">
-                {/* Camera and group adjusted down (y = -3.5) so sphere never collides with heading */}
-                <Canvas camera={{ position: [0, 0, 36], fov: 65 }} dpr={[1, 1.5]}>
+            <div className="w-full h-full relative" style={{ touchAction: "pan-y" }}>
+                {/* 
+                    Performance critical: frameloop is "always" ONLY when in view.
+                    When scrolled past, Three.js stops computing frames, liberating 100% of GPU for smooth scrolling!
+                */}
+                <Canvas 
+                    frameloop={isInView ? "always" : "never"}
+                    camera={{ position: [0, 0, 38], fov: 65 }} 
+                    dpr={[1, isMobile ? 1 : 1.5]}
+                    style={{ touchAction: "pan-y" }}
+                >
                     <color attach="background" args={['#000000']} />
                     <ambientLight intensity={0.6} />
                     <pointLight position={[10, 10, 10]} intensity={1.2} />
                     <pointLight position={[-10, -10, -10]} intensity={0.6} />
                     <pointLight position={[0, 10, 0]} intensity={0.8} color="#7c3aed" />
 
-                    <group position={[0, -3.5, 0]}>
-                        <SkillsSphereCloud />
+                    <ResponsiveController isMobile={isMobile} />
+
+                    <group position={[0, isMobile ? -2 : -3.5, 0]}>
+                        <SkillsSphereCloud radius={isMobile ? 13 : 15} />
                     </group>
 
                     <OrbitControls
-                        target={[0, -3.5, 0]}
+                        target={[0, isMobile ? -2 : -3.5, 0]}
                         enableZoom={false}
                         enablePan={false}
-                        autoRotate
-                        autoRotateSpeed={0.5}
+                        autoRotate={isInView}
+                        autoRotateSpeed={0.8}
                         minPolarAngle={Math.PI / 4}
                         maxPolarAngle={Math.PI * 0.75}
+                        touches={{
+                            ONE: isMobile ? THREE.TOUCH.NONE : THREE.TOUCH.ROTATE,
+                            TWO: THREE.TOUCH.DOLLY_ROTATE
+                        }}
                     />
 
-                    <mesh position={[0, -3.5, 0]}>
-                        <sphereGeometry args={[50, 24, 24]} />
+                    <mesh position={[0, isMobile ? -2 : -3.5, 0]}>
+                        <sphereGeometry args={[50, 16, 16]} />
                         <meshBasicMaterial color="#000000" side={THREE.BackSide} />
                     </mesh>
                 </Canvas>

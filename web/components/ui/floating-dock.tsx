@@ -22,7 +22,7 @@ function DockIcon({ mouseX, item }: { mouseX: any; item: any }) {
         return val - bounds.x - bounds.width / 2;
     });
 
-    const widthSync = useTransform(distance, [-150, 0, 150], [40, 72, 40]);
+    const widthSync = useTransform(distance, [-150, 0, 150], [38, 64, 38]);
     const width = useSpring(widthSync, { mass: 0.1, stiffness: 160, damping: 14 });
 
     const handleClick = (e: React.MouseEvent) => {
@@ -43,7 +43,7 @@ function DockIcon({ mouseX, item }: { mouseX: any; item: any }) {
             <motion.div
                 ref={ref}
                 style={{ width }}
-                className="aspect-square w-10 rounded-full bg-neutral-900/80 backdrop-blur-xl border border-white/15 flex items-center justify-center relative group hover:bg-primary/20 hover:border-primary/50 transition-colors shadow-lg"
+                className="aspect-square w-9 sm:w-10 rounded-full bg-neutral-900/80 backdrop-blur-xl border border-white/15 flex items-center justify-center relative group hover:bg-primary/20 hover:border-primary/50 transition-colors shadow-lg"
             >
                 <a
                     href={item.href}
@@ -51,11 +51,11 @@ function DockIcon({ mouseX, item }: { mouseX: any; item: any }) {
                     className="w-full h-full flex items-center justify-center cursor-pointer"
                     aria-label={item.name}
                 >
-                    <item.icon className="w-1/2 h-1/2 text-foreground/80 group-hover:text-primary transition-colors" />
+                    <item.icon className="w-4 h-4 sm:w-5 sm:h-5 text-foreground/80 group-hover:text-primary transition-colors" />
                 </a>
 
-                {/* Tooltip */}
-                <span className="absolute -top-9 bg-neutral-900/90 border border-white/10 text-white text-[11px] font-mono px-2.5 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl">
+                {/* Tooltip: only visible on desktop hover */}
+                <span className="hidden md:block absolute -top-9 bg-neutral-900/90 border border-white/10 text-white text-[11px] font-mono px-2.5 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl whitespace-nowrap">
                     {item.name}
                 </span>
             </motion.div>
@@ -67,11 +67,11 @@ export function FloatingDock() {
     const mouseX = useMotionValue(Infinity);
 
     return (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[90]">
+        <div className="fixed bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-[90] max-w-[95vw]">
             <motion.div
                 onMouseMove={(e) => mouseX.set(e.pageX)}
                 onMouseLeave={() => mouseX.set(Infinity)}
-                className="flex items-end gap-3 p-3 rounded-2xl bg-neutral-950/70 backdrop-blur-2xl border border-white/15 shadow-[0_10px_35px_rgba(0,0,0,0.6)]"
+                className="flex items-end gap-1.5 sm:gap-3 p-1.5 sm:p-3 rounded-2xl bg-neutral-950/80 backdrop-blur-2xl border border-white/15 shadow-[0_10px_35px_rgba(0,0,0,0.6)]"
             >
                 {items.map((item) => (
                     <DockIcon key={item.name} mouseX={mouseX} item={item} />

@@ -4,6 +4,10 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  experimental: {
+    // @ts-ignore
+    turbopackUseSystemTlsCerts: true,
+  },
   images: {
     remotePatterns: [
       {

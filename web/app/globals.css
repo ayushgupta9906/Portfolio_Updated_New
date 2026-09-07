@@ -1,8 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-heading: var(--font-heading);
-  --font-body: var(--font-body);
+  --font-heading: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -29,25 +30,21 @@
   --animate-shimmer: shimmer 2.5s linear infinite;
 
   @keyframes float {
-
     0%,
     100% {
       transform: translateY(0);
     }
-
     50% {
       transform: translateY(-10px);
     }
   }
 
   @keyframes pulse-glow {
-
     0%,
     100% {
       opacity: 1;
       box-shadow: 0 0 20px var(--primary);
     }
-
     50% {
       opacity: 0.5;
       box-shadow: 0 0 10px var(--primary);
@@ -58,7 +55,6 @@
     from {
       background-position: 0 0;
     }
-
     to {
       background-position: -200% 0;
     }
@@ -66,20 +62,10 @@
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #09090b;
-  /* 222.2 84% 4.9% converted to hex roughly or use hsl syntax if preferred, but v4 handles colors well. Let's stick to okcl or hsl if we want variable manipulation, but hex is safe */
-  /* Reverting to HSL-like values but formatted for potential CSS variable usage if needed, 
-     but for @theme vars, we usually provide value. 
-     Tailwind v4 theme vars mapping: if we map --color-background to var(--background), 
-     var(--background) must be a valid color value.
-  */
-
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
 
   --primary: oklch(0.6 0.25 280);
-  /* Violetish */
   --primary-foreground: oklch(0.985 0 0);
 
   --secondary: oklch(0.97 0 0);
@@ -100,7 +86,6 @@
   --foreground: oklch(0.985 0 0);
 
   --primary: oklch(0.6 0.25 280);
-  /* Deep Violet */
   --primary-foreground: oklch(0.985 0 0);
 
   --secondary: oklch(0.269 0 0);
@@ -127,6 +112,11 @@
 
 /* Base styles */
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
   * {
     @apply border-border;
   }
@@ -134,12 +124,26 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+/* Mobile GPU optimization: cap expensive blurs to prevent scroll lag */
+@media (max-width: 768px) {
+  [class*="backdrop-blur-xl"],
+  [class*="backdrop-blur-2xl"] {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
   }
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
