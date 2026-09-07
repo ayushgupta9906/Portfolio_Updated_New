@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { siteConfig, heroRoles } from "@/lib/data";
 import { Typewriter } from "@/components/ui/typewriter";
 import { FrameAnimation } from "@/components/ui/frame-animation";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
 interface HeroHUDProps {
     frames: string[];
@@ -12,12 +12,21 @@ interface HeroHUDProps {
 
 export function HeroHUD({ frames }: HeroHUDProps) {
     const containerRef = useRef<HTMLElement>(null);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
+
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end end"],
     });
 
-    // Accelerated frame playback: plays full animation briskly across initial scroll travel
+    // Accelerated frame playback on desktop: plays full animation briskly across initial scroll travel
     const frameIndex = useTransform(scrollYProgress, [0, 0.55], [0, frames.length - 1], { clamp: true });
     const heroOpacity = useTransform(scrollYProgress, [0, 0.45], [1, 0]);
     const heroScale = useTransform(scrollYProgress, [0, 0.45], [1, 0.95]);
@@ -25,25 +34,26 @@ export function HeroHUD({ frames }: HeroHUDProps) {
     return (
         <section
             ref={containerRef}
-            className="relative h-[130vh] sm:h-[160vh] w-full"
+            className="relative min-h-[92dvh] md:h-[160vh] w-full"
         >
-            <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4">
-                {/* Background Animation - Scroll Controlled */}
-                <div className="absolute inset-0 z-0 opacity-35 sm:opacity-40 pointer-events-none">
+            <div className="relative md:sticky md:top-0 min-h-[92dvh] md:h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 py-16 md:py-0">
+                {/* Background Animation */}
+                <div className="absolute inset-0 z-0 opacity-30 md:opacity-40 pointer-events-none">
                     <FrameAnimation
                         frames={frames}
-                        currentFrame={frameIndex}
-                        autoPlay={false}
-                        loop={false}
+                        currentFrame={isMobile ? undefined : frameIndex}
+                        autoPlay={isMobile}
+                        loop={isMobile}
+                        fps={isMobile ? 18 : 30}
                     />
                 </div>
 
                 {/* HUD Scanline Effect */}
-                <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%] z-50 opacity-20" />
+                <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%] z-50 opacity-15 md:opacity-20" />
 
-                {/* Content Group with smooth fade on scroll */}
+                {/* Content Group with smooth fade on scroll on desktop */}
                 <motion.div 
-                    style={{ opacity: heroOpacity, scale: heroScale }}
+                    style={isMobile ? undefined : { opacity: heroOpacity, scale: heroScale }}
                     className="flex flex-col items-center gap-4 sm:gap-6 relative z-20 pointer-events-auto max-w-full"
                 >
                     <motion.div
@@ -65,13 +75,13 @@ export function HeroHUD({ frames }: HeroHUDProps) {
                         </h1>
 
                         {/* Floating HUD Elements */}
-                        <div className="absolute -inset-x-4 sm:-inset-x-10 md:-inset-x-20 -inset-y-4 sm:-inset-y-10 border border-white/5 bg-white/5 backdrop-blur-[2px] rounded-3xl sm:rounded-full -z-10 animate-pulse-glow pointer-events-none" />
+                        <div className="absolute -inset-x-4 sm:-inset-x-10 md:-inset-x-20 -inset-y-4 sm:-inset-y-10 border border-white/5 bg-white/5 backdrop-blur-sm rounded-3xl sm:rounded-full -z-10 animate-pulse-glow pointer-events-none" />
                     </motion.div>
 
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.8, duration: 1 }}
+                        transition={{ delay: 0.5, duration: 0.8 }}
                         className="flex flex-col items-center gap-3 sm:gap-4 max-w-full"
                     >
                         <div className="h-6 overflow-hidden flex items-center justify-center">
@@ -101,9 +111,9 @@ export function HeroHUD({ frames }: HeroHUDProps) {
                     <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-primary/40" />
                 </div>
 
-                <div className="absolute bottom-12 sm:bottom-16 left-1/2 -translate-x-1/2 animate-bounce pointer-events-none flex flex-col items-center gap-2">
+                <div className="absolute bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2 animate-bounce pointer-events-none flex flex-col items-center gap-2">
                     <span className="text-[9px] sm:text-[10px] font-mono text-primary/60 tracking-widest uppercase">Scroll</span>
-                    <div className="w-px h-8 sm:h-10 bg-gradient-to-b from-primary/80 to-transparent" />
+                    <div className="w-px h-6 sm:h-10 bg-gradient-to-b from-primary/80 to-transparent" />
                 </div>
             </div>
         </section>

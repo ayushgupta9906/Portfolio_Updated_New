@@ -28,7 +28,7 @@ function SkillSphere({ skill, position }: {
                 onPointerEnter={() => setHovered(true)}
                 onPointerLeave={() => setHovered(false)}
             >
-                <sphereGeometry args={[1.7, 18, 18]} />
+                <sphereGeometry args={[1.6, 16, 16]} />
                 <meshStandardMaterial
                     color={hovered ? "#c084fc" : "#7c3aed"}
                     emissive="#7c3aed"
@@ -50,13 +50,20 @@ function SkillSphere({ skill, position }: {
     );
 }
 
-function SkillsSphereCloud({ radius = 15 }: { radius?: number }) {
+function SkillsSphereCloud({ radius = 15, isMobile = false }: { radius?: number; isMobile?: boolean }) {
+    // On mobile, render a curated set of prominent skills to eliminate DOM layout thrashing & guarantee 60-120fps
+    const displaySkills = useMemo(() => {
+        if (!isMobile) return skills;
+        return skills.slice(0, 18);
+    }, [isMobile]);
+
     const positions = useMemo(() => {
         const temp: Array<[number, number, number]> = [];
+        const count = displaySkills.length;
 
-        skills.forEach((_, i) => {
-            const phi = Math.acos(-1 + (2 * i) / skills.length);
-            const theta = Math.sqrt(skills.length * Math.PI) * phi;
+        displaySkills.forEach((_, i) => {
+            const phi = Math.acos(-1 + (2 * i) / count);
+            const theta = Math.sqrt(count * Math.PI) * phi;
 
             const x = radius * Math.cos(theta) * Math.sin(phi);
             const y = radius * Math.sin(theta) * Math.sin(phi);
@@ -66,11 +73,11 @@ function SkillsSphereCloud({ radius = 15 }: { radius?: number }) {
         });
 
         return temp;
-    }, [radius]);
+    }, [displaySkills, radius]);
 
     return (
         <>
-            {skills.map((skill, i) => (
+            {displaySkills.map((skill, i) => (
                 <SkillSphere
                     key={skill.name}
                     skill={skill}
@@ -84,7 +91,7 @@ function SkillsSphereCloud({ radius = 15 }: { radius?: number }) {
 function ResponsiveController({ isMobile }: { isMobile: boolean }) {
     const { camera } = useThree();
     useEffect(() => {
-        camera.position.set(0, 0, isMobile ? 48 : 36);
+        camera.position.set(0, 0, isMobile ? 46 : 36);
         camera.updateProjectionMatrix();
     }, [isMobile, camera]);
     return null;
@@ -102,12 +109,12 @@ export function SkillsSphere() {
         checkMobile();
         window.addEventListener("resize", checkMobile);
 
-        // Observer to only run the Three.js render loop when the section is in or near the viewport
+        // Performance critical: Only run RAF loop when section is visible on screen!
         const observer = new IntersectionObserver(
             ([entry]) => {
                 setIsInView(entry.isIntersecting);
             },
-            { rootMargin: "250px 0px" }
+            { rootMargin: "150px" }
         );
 
         if (sectionRef.current) {
@@ -124,27 +131,27 @@ export function SkillsSphere() {
         <section
             ref={sectionRef}
             id="skills"
-            className="h-screen flex flex-col items-center justify-center bg-gradient-to-b from-background to-neutral-900 relative overflow-hidden will-change-transform"
+            className="h-screen flex flex-col items-center justify-center bg-gradient-to-b from-background to-neutral-900 relative overflow-hidden"
         >
-            {/* Heading */}
+            {/* Heading positioned with clear vertical separation */}
             <div className="absolute top-6 sm:top-12 z-20 text-center pointer-events-none px-4">
+                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-primary/80">Expertise</span>
                 <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold font-heading mb-1.5 sm:mb-2 text-white">
                     Tech <span className="text-primary">Universe</span>
                 </h2>
                 <p className="text-muted-foreground text-xs sm:text-sm md:text-base font-mono">
-                    {isMobile ? "Interactive 3D Skill Galaxy" : "Drag to rotate & explore the interactive ecosystem"}
+                    {isMobile ? "Autonomous 3D Skill Galaxy" : "Drag to rotate & explore the interactive ecosystem"}
                 </p>
             </div>
 
-            <div className="w-full h-full relative" style={{ touchAction: "pan-y" }}>
-                {/* 
-                    Performance critical: frameloop is "always" ONLY when in view.
-                    When scrolled past, Three.js stops computing frames, liberating 100% of GPU for smooth scrolling!
-                */}
-                <Canvas 
+            <div
+                className="w-full h-full relative"
+                style={{ touchAction: "pan-y" }}
+            >
+                <Canvas
                     frameloop={isInView ? "always" : "never"}
-                    camera={{ position: [0, 0, 38], fov: 65 }} 
-                    dpr={[1, isMobile ? 1 : 1.5]}
+                    camera={{ position: [0, 0, 38], fov: 65 }}
+                    dpr={isMobile ? [1, 1] : [1, 1.5]}
                     style={{ touchAction: "pan-y" }}
                 >
                     <color attach="background" args={['#000000']} />
@@ -156,19 +163,19 @@ export function SkillsSphere() {
                     <ResponsiveController isMobile={isMobile} />
 
                     <group position={[0, isMobile ? -2 : -3.5, 0]}>
-                        <SkillsSphereCloud radius={isMobile ? 13 : 15} />
+                        <SkillsSphereCloud radius={isMobile ? 12 : 15} isMobile={isMobile} />
                     </group>
 
                     <OrbitControls
                         target={[0, isMobile ? -2 : -3.5, 0]}
                         enableZoom={false}
                         enablePan={false}
-                        autoRotate={isInView}
+                        autoRotate
                         autoRotateSpeed={0.8}
                         minPolarAngle={Math.PI / 4}
                         maxPolarAngle={Math.PI * 0.75}
                         touches={{
-                            ONE: isMobile ? THREE.TOUCH.NONE : THREE.TOUCH.ROTATE,
+                            ONE: THREE.TOUCH.NONE,
                             TWO: THREE.TOUCH.DOLLY_ROTATE
                         }}
                     />
