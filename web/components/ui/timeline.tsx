@@ -22,7 +22,7 @@ function TimelineItem({ date, title, subtitle, description, status, isLeft }: Ti
                 initial={{ scale: 0 }}
                 whileInView={{ scale: 1 }}
                 viewport={{ once: true }}
-                className="absolute left-4 sm:left-6 md:left-1/2 -translate-x-1/2 top-6 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-primary border-4 border-background z-10 shadow-[0_0_10px_rgba(168,85,247,0.6)]"
+                className="absolute left-3 sm:left-6 md:left-1/2 -translate-x-1/2 top-6 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-primary border-4 border-background z-10 shadow-[0_0_10px_rgba(168,85,247,0.6)]"
             />
 
             <motion.div
@@ -31,7 +31,7 @@ function TimelineItem({ date, title, subtitle, description, status, isLeft }: Ti
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5 }}
                 className={cn(
-                    "w-[calc(100%-2.5rem)] ml-8 sm:w-[calc(100%-3.5rem)] sm:ml-12 md:w-[calc(50%-2rem)] md:ml-0 p-5 sm:p-6 bg-card border border-border rounded-xl shadow-sm hover:shadow-md transition-shadow relative group",
+                    "w-[calc(100%-2rem)] ml-6 sm:w-[calc(100%-3.5rem)] sm:ml-12 md:w-[calc(50%-2rem)] md:ml-0 p-5 sm:p-6 bg-card border border-border rounded-xl shadow-sm hover:shadow-md transition-shadow relative group",
                     "after:hidden md:after:block after:absolute after:top-6 after:w-4 after:h-4 after:bg-card after:border-t after:border-l after:border-border",
                     isLeft ? "md:mr-8 md:after:-right-2 md:after:rotate-[135deg]" : "md:ml-8 md:after:-left-2 md:after:-rotate-45"
                 )}

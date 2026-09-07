@@ -34,11 +34,11 @@ export function HeroHUD({ frames }: HeroHUDProps) {
     return (
         <section
             ref={containerRef}
-            className="relative min-h-[92dvh] md:h-[160vh] w-full"
+            className="relative min-h-[85dvh] md:h-[160vh] w-full"
         >
-            <div className="relative md:sticky md:top-0 min-h-[92dvh] md:h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 py-16 md:py-0">
+            <div className="relative md:sticky md:top-0 min-h-[85dvh] md:h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 py-10 md:py-0">
                 {/* Background Animation */}
-                <div className="absolute inset-0 z-0 opacity-30 md:opacity-40 pointer-events-none">
+                <div className="absolute inset-0 z-0 opacity-30 md:opacity-40 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black_60%,transparent_95%)]">
                     <FrameAnimation
                         frames={frames}
                         currentFrame={isMobile ? undefined : frameIndex}
@@ -66,7 +66,7 @@ export function HeroHUD({ frames }: HeroHUDProps) {
                             System Initialization // Active
                         </span>
 
-                        <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-bold font-heading tracking-tight leading-none text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.25)] select-none">
+                        <h1 className="text-3xl sm:text-6xl md:text-8xl lg:text-9xl font-bold font-heading tracking-tight leading-none text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.25)] select-none">
                             {siteConfig.name.split(' ').map((word, i) => (
                                 <span key={word} className={i === 1 ? "text-primary inline-block" : "inline-block"}>
                                     {word.toUpperCase()}{i === 0 ? "\u00A0" : ""}
@@ -111,7 +111,7 @@ export function HeroHUD({ frames }: HeroHUDProps) {
                     <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-primary/40" />
                 </div>
 
-                <div className="absolute bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2 animate-bounce pointer-events-none flex flex-col items-center gap-2">
+                <div className="absolute bottom-20 sm:bottom-12 left-1/2 -translate-x-1/2 animate-bounce pointer-events-none flex flex-col items-center gap-2">
                     <span className="text-[9px] sm:text-[10px] font-mono text-primary/60 tracking-widest uppercase">Scroll</span>
                     <div className="w-px h-6 sm:h-10 bg-gradient-to-b from-primary/80 to-transparent" />
                 </div>

@@ -41,7 +41,7 @@ export function About() {
                     </motion.div>
 
                     {/* Image Card */}
-                    <div className="flex justify-center md:justify-end perspective-1000">
+                    <div className="flex justify-center md:justify-end perspective-1000 max-w-[260px] sm:max-w-sm mx-auto md:mr-0">
                         <TiltCard
                             src="/profile_avatar.png" // Using the generated image path (need to handle actual file)
                             alt="Ayush Gupta"

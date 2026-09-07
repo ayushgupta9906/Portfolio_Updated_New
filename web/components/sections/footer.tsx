@@ -8,7 +8,7 @@ export function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="bg-gradient-to-b from-background to-neutral-950 border-t border-border pt-12 pb-28 sm:pb-32">
+        <footer className="bg-gradient-to-b from-background to-neutral-950 border-t border-border pt-12 pb-32 sm:pb-36">
             <div className="container mx-auto px-4 md:px-6 max-w-6xl">
                 {/* Top Section - Animated Stats */}
                 <motion.div

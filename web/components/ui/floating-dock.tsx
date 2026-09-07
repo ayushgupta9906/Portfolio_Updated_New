@@ -67,7 +67,7 @@ export function FloatingDock() {
     const mouseX = useMotionValue(Infinity);
 
     return (
-        <div className="fixed bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-[90] max-w-[95vw]">
+        <div className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 z-[90] max-w-[95vw]">
             <motion.div
                 onMouseMove={(e) => mouseX.set(e.pageX)}
                 onMouseLeave={() => mouseX.set(Infinity)}

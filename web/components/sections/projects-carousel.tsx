@@ -54,6 +54,25 @@ export function ProjectsCarousel() {
         };
     }, [selectedProject]);
 
+    
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchStartX(e.touches[0].clientX);
+    };
+
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        if (touchStartX === null) return;
+        const touchEndX = e.changedTouches[0].clientX;
+        const diff = touchStartX - touchEndX;
+        if (projectImages.length > 1) {
+            if (diff > 45) {
+                setActiveImageIndex((prev) => (prev < projectImages.length - 1 ? prev + 1 : 0));
+            } else if (diff < -45) {
+                setActiveImageIndex((prev) => (prev > 0 ? prev - 1 : projectImages.length - 1));
+            }
+        }
+        setTouchStartX(null);
+    };
+
     const displayedProjects = showAll ? projects : projects.slice(0, 6);
 
     const projectImages: string[] = selectedProject
@@ -112,7 +131,7 @@ export function ProjectsCarousel() {
                                 }}
                             >
                                 {/* Project Preview Image */}
-                                <div className="h-48 sm:h-56 bg-neutral-900 relative overflow-hidden">
+                                <div className="h-44 sm:h-56 bg-neutral-900 relative overflow-hidden">
                                     {(project as any).status && (
                                         <div className={`absolute top-3 right-3 sm:top-4 sm:right-4 z-20 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-widest rounded-full shadow-xl ${
                                             String((project as any).status).toLowerCase().includes("ongoing") ||
@@ -234,7 +253,7 @@ export function ProjectsCarousel() {
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.92, opacity: 0, y: 20 }}
                             transition={{ type: "spring", stiffness: 300, damping: 28 }}
-                            className="relative w-full max-w-4xl max-h-[90vh] bg-neutral-900 border border-white/15 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col"
+                            className="relative w-full max-w-4xl max-h-[88dvh] bg-neutral-900 border border-white/15 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col my-auto"
                             onClick={(e) => e.stopPropagation()}
                         >
                             {/* Close Button */}
@@ -247,7 +266,7 @@ export function ProjectsCarousel() {
                             </button>
 
                             {/* Image Showcase Area */}
-                            <div className="relative w-full h-[210px] sm:h-[320px] md:h-[460px] bg-neutral-950 flex items-center justify-center overflow-hidden flex-shrink-0">
+                            <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} className="relative w-full h-[180px] sm:h-[300px] md:h-[460px] bg-neutral-950 flex items-center justify-center overflow-hidden flex-shrink-0 touch-pan-y select-none">
                                 {currentDisplayImage ? (
                                     // eslint-disable-next-line @next/next/no-img-element
                                     <img
@@ -325,7 +344,7 @@ export function ProjectsCarousel() {
                             </div>
 
                             {/* Project Details & Action Area */}
-                            <div className="p-5 sm:p-6 md:p-8 overflow-y-auto flex flex-col gap-4 sm:gap-6">
+                            <div className="p-4 sm:p-6 md:p-8 overflow-y-auto flex flex-col gap-3 sm:gap-6 flex-1">
                                 <div>
                                     <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-2">
                                         {selectedProject.title}
@@ -353,7 +372,7 @@ export function ProjectsCarousel() {
                                 </div>
 
                                 {/* Modal Actions */}
-                                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-4 border-t border-white/10">
+                                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 pt-3 sm:pt-4 border-t border-white/10 sticky bottom-0 bg-neutral-900/95 -mx-4 -mb-4 p-4 sm:static sm:p-0 sm:m-0 sm:bg-transparent backdrop-blur-md z-30">
                                     {selectedProject.links.demo && selectedProject.links.demo !== "#" && (
                                         <a
                                             href={selectedProject.links.demo}

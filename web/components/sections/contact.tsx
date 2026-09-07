@@ -83,7 +83,7 @@ export function Contact() {
                                     name="name"
                                     required
                                     placeholder="Your Name"
-                                    className="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 text-sm rounded-lg bg-secondary/50 border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                                    className="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 text-base md:text-sm rounded-lg bg-secondary/50 border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                                 />
                             </div>
                             <div className="space-y-1.5 sm:space-y-2">
@@ -93,7 +93,7 @@ export function Contact() {
                                     name="email"
                                     required
                                     placeholder="yourname@example.com"
-                                    className="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 text-sm rounded-lg bg-secondary/50 border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                                    className="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 text-base md:text-sm rounded-lg bg-secondary/50 border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                                 />
                             </div>
                             <div className="space-y-1.5 sm:space-y-2">
@@ -103,7 +103,7 @@ export function Contact() {
                                     required
                                     rows={4}
                                     placeholder="Tell me about your project..."
-                                    className="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 text-sm rounded-lg bg-secondary/50 border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none"
+                                    className="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 text-base md:text-sm rounded-lg bg-secondary/50 border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none"
                                 />
                             </div>
 
